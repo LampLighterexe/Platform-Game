@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://hrc5l7g7hi00"]
+
+[ext_resource type="Script" path="res://Scripts/Projectile.gd" id="1_85ooi"]
+[ext_resource type="PackedScene" uid="uid://cv2sy8apl35s0" path="res://models/maxwell.fbx" id="2_bo651"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="3_ern7j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_oi4jp"]
+
+[node name="Projectile" type="Node3D"]
+script = ExtResource("1_85ooi")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_oi4jp")
+
+[node name="Smoothing" type="Node3D" parent="RigidBody3D"]
+script = ExtResource("3_ern7j")
+
+[node name="maxwell" parent="RigidBody3D/Smoothing" instance=ExtResource("2_bo651")]
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, -0.177349, 0)
+
+[editable path="RigidBody3D/Smoothing/maxwell"]
