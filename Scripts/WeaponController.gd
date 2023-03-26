@@ -15,14 +15,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 @onready var ViewModelAnim := $"../Smoothing/Neck/Camera3D/view_arms/AnimationPlayer"
-@onready var ViewModelWeapon := $"../Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D/BoneAttachment3D/WeaponModel/RootNode/dingus"
+@onready var ViewModelWeapon := $"../Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel"
 @onready var WeaponFire := $"../WeaponFire"
-@onready var Camera := $"../Smoothing/Neck/Camera3D"
+@onready var Aim := $"../Aim"
+@onready var Player := $".."
+
 var	Hands=Weapon.new({
 		"AnimationSet":"hand",
 		"FireAnim":"w_hand",
 		"Model":null,
-		"Projectile":"maxwell",
+		"Projectile":"fist",
 	})
 var	Maxwell=Weapon.new({
 		"AnimationSet":"maxwell",
@@ -37,20 +39,26 @@ var	Pistol=Weapon.new({
 		"FireAnim":"w_freeze_ray",
 		"Model":"res://models/exported/Freeze_Ray.res",
 		"Projectile":"freeze_ray",
-		"ProjXSpeed":10,
+		"ProjXSpeed":16,
 		"ProjYSpeed":0,
 		"Automatic":true
 	})
-#var Hands = Weapon.new("hand","w_hand","maxwell",null,-1,-1,false)
-#var Maxwell = Weapon.new("maxwell","w_maxwell","maxwell","res://models/exported/maxwell.res",1,1,false)
-#var Pistol = Weapon.new("pistol","w_freeze_ray","freeze_ray","res://models/exported/Freeze_Ray.res",1,1,true)
-#var Debug = Weapon.new("pistol","w_debug","maxwell","res://models/exported/maxwell.res",1,1,true)
+	
+var	Debug=Weapon.new({
+		"AnimationSet":"pistol",
+		"FireAnim":"w_freeze_ray",
+		"Model":null,
+		"Projectile":"debug",
+		"ProjXSpeed":0,
+		"ProjYSpeed":0,
+		"Automatic":true
+	})
 
 var WeaponSlot = 0
 var LastWeaponSlot = 0
 var CurrentState = "idle"
 var LastState = "idle"
-var Weapons = [Hands,Maxwell,Pistol]
+var Weapons = [Hands,Maxwell,Pistol,Debug]
 var CurrentWeapon = null
 var ProjFact = ProjectileFactory.new()
 func FireCurrentWeapon():
@@ -60,9 +68,10 @@ func FireCurrentWeapon():
 	var newproj = preload("res://Projectile.tscn").instantiate()
 	var projconfig = ProjFact.getProjectile(CurrentWeapon.Projectile)
 	newproj.initialize(
-		Camera.global_transform,
-		Camera.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
-		projconfig
+		Aim.global_transform,
+		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
+		projconfig,
+		Aim
 	)
 	add_child(newproj)
 
@@ -114,4 +123,4 @@ func _process(_delta):
 
 
 func getAnim(w,s):
-	return "Armature|"+w.AnimationSet+"_"+s
+	return w.AnimationSet+"_"+s

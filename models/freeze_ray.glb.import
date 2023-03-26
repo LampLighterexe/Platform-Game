@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://btr3ew5sbtnv8"
-path="res://.godot/imported/cube.fbx-066d7266a8aab8b6d11fe233111978ba.scn"
+uid="uid://djps74e3kr2xl"
+path="res://.godot/imported/freeze_ray.glb-a5347a61be7a5eb4384d88df801425dc.scn"
 
 [deps]
 
-source_file="res://models/cube.fbx"
-dest_files=["res://.godot/imported/cube.fbx-066d7266a8aab8b6d11fe233111978ba.scn"]
+source_file="res://models/freeze_ray.glb"
+dest_files=["res://.godot/imported/freeze_ray.glb-a5347a61be7a5eb4384d88df801425dc.scn"]
 
 [params]
 
@@ -30,7 +30,7 @@ animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={
 "meshes": {
-"Root Scene_Cube": {
+"freeze_ray_Cube": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
@@ -38,7 +38,7 @@ _subresources={
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
 "save_to_file/make_streamable": "",
-"save_to_file/path": "res://models/exported/cube.res"
+"save_to_file/path": "res://models/exported/Freeze_Ray.res"
 }
 }
 }

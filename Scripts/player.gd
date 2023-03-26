@@ -14,6 +14,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var neck := $Smoothing/Neck
 @onready var camera := $Smoothing/Neck/Camera3D
+
+@onready var Aim := $Aim
+
 @onready var ViewModelCamera := $CanvasLayer/SubViewportContainer/SubViewport/ViewModelCamera
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -25,6 +28,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			neck.rotate_y(-event.relative.x * CameraSens)
 			camera.rotate_x(-event.relative.y * CameraSens)
+			
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 
@@ -34,6 +38,7 @@ func _ready():
 	
 func _afterlerp():
 	ViewModelCamera.global_transform = camera.global_transform
+	Aim.global_transform = camera.global_transform
 
 func _physics_process(delta):
 	# Add the gravity.

@@ -1,10 +1,9 @@
 [gd_scene load_steps=12 format=3 uid="uid://cmolmb4vvryp0"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_hxdw1"]
-[ext_resource type="PackedScene" uid="uid://cv2sy8apl35s0" path="res://models/maxwell.fbx" id="1_n8qdl"]
 [ext_resource type="Script" path="res://Scripts/WeaponController.gd" id="2_0stnl"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_oxmek"]
-[ext_resource type="PackedScene" uid="uid://c3d5cer654dc1" path="res://models/view_arms.fbx" id="3_5gwlf"]
+[ext_resource type="PackedScene" uid="uid://cscogdcs4a472" path="res://models/view_arms.glb" id="4_0kumh"]
 [ext_resource type="PackedScene" uid="uid://dn7wd0eb23u2d" path="res://reefslider_avatar_uv.fbx" id="4_jh1ov"]
 
 [sub_resource type="Animation" id="Animation_xbd82"]
@@ -67,9 +66,12 @@ _data = {
 "w_maxwell": SubResource("Animation_ygai1")
 }
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gepx3"]
+albedo_color = Color(0.784314, 0.784314, 0.784314, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_02w5n"]
 
-[node name="CharacterBody3D" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D"]
 collision_layer = 0
 script = ExtResource("1_hxdw1")
 
@@ -123,34 +125,21 @@ cull_mask = 1048573
 current = true
 fov = 90.0
 
-[node name="view_arms" parent="Smoothing/Neck/Camera3D" instance=ExtResource("3_5gwlf")]
-transform = Transform3D(-0.3, 0, -2.62268e-08, 0, 0.3, 0, 2.62268e-08, 0, -0.3, 0, -0.6, 0)
+[node name="view_arms" parent="Smoothing/Neck/Camera3D" instance=ExtResource("4_0kumh")]
+transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -0.6, 0)
 
-[node name="Skeleton3D" parent="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature" index="0"]
-bones/2/rotation = Quaternion(0.763588, 0.34111, 0.245099, 0.490412)
-bones/3/rotation = Quaternion(-0.0142909, 0.0539062, 0.226106, 0.972505)
-bones/4/rotation = Quaternion(0.0869302, -0.124779, 0.112991, 0.981889)
-bones/5/rotation = Quaternion(0.705772, -1.28389e-07, -0.043423, 0.707107)
-bones/7/rotation = Quaternion(0.0424748, -0.0770578, 0.480859, 0.872372)
-bones/8/rotation = Quaternion(-0.0846202, 3.026e-08, -0.475257, 0.875769)
-bones/9/rotation = Quaternion(3.85465e-09, 2.23517e-08, 2.16491e-08, 1)
-bones/10/rotation = Quaternion(-1.16093e-08, 5.21541e-08, -6.52019e-08, 1)
-
-[node name="Cube" parent="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D" index="0"]
+[node name="Cube" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="0"]
 layers = 2
-cast_shadow = 0
+material_override = SubResource("StandardMaterial3D_gepx3")
 
-[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.976775, 0.131744, 0.168982, -0.197144, 0.243627, 0.949621, 0.0839385, -0.96088, 0.263941, 0.00603251, -0.0153882, 0.00580619)
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="1"]
+transform = Transform3D(0.998113, 1.15484e-07, -0.0614094, -0.0614093, 1.87487e-08, -0.998113, -1.41561e-07, 1, -2.53785e-08, 0.711207, 2.9, 2.32527e-08)
 bone_name = "rightarmweapon"
 bone_idx = 5
 
-[node name="WeaponModel" parent="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("1_n8qdl")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
-
-[node name="dingus" parent="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D/BoneAttachment3D/WeaponModel/RootNode" index="0"]
+[node name="WeaponModel" type="MeshInstance3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D"]
+transform = Transform3D(1, 7.45058e-09, 0, 1.11759e-08, 1, -1.49012e-08, 0, 0, 1, 0, 0, 0)
 layers = 2
-cast_shadow = 0
 
 [node name="reefslider_avatar_uv" parent="Smoothing/Neck" instance=ExtResource("4_jh1ov")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1.58228, 0)
@@ -169,6 +158,7 @@ layers = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_02w5n")
 
+[node name="Aim" type="Node3D" parent="."]
+
 [editable path="Smoothing/Neck/Camera3D/view_arms"]
-[editable path="Smoothing/Neck/Camera3D/view_arms/RootNode/Armature/Skeleton3D/BoneAttachment3D/WeaponModel"]
 [editable path="Smoothing/Neck/reefslider_avatar_uv"]

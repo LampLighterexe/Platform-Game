@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bkxf6xom7eueo"
-path="res://.godot/imported/freeze_ray.fbx-0e560eabca0c06ae9c8516f8845f6ed2.scn"
+uid="uid://bku4mmysgsv6t"
+path="res://.godot/imported/ice_ball.glb-ac26d71f68cd4b5bee62678ccba34359.scn"
 
 [deps]
 
-source_file="res://models/freeze_ray.fbx"
-dest_files=["res://.godot/imported/freeze_ray.fbx-0e560eabca0c06ae9c8516f8845f6ed2.scn"]
+source_file="res://models/ice_ball.glb"
+dest_files=["res://.godot/imported/ice_ball.glb-ac26d71f68cd4b5bee62678ccba34359.scn"]
 
 [params]
 
@@ -30,7 +30,7 @@ animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={
 "meshes": {
-"Root Scene_Cube": {
+"ice_ball_Cube": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
@@ -38,7 +38,7 @@ _subresources={
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
 "save_to_file/make_streamable": "",
-"save_to_file/path": "res://models/exported/Freeze_Ray.res"
+"save_to_file/path": "res://models/exported/ice_ball.res"
 }
 }
 }

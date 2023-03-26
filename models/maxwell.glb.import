@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cv2sy8apl35s0"
-path="res://.godot/imported/maxwell.fbx-3285bd651355b98782c7bbd5f9668c57.scn"
+uid="uid://cms7x5wss71oj"
+path="res://.godot/imported/maxwell.glb-54bfdc33bb55f579cdff84b7af7d1e89.scn"
 
 [deps]
 
-source_file="res://models/maxwell.fbx"
-dest_files=["res://.godot/imported/maxwell.fbx-3285bd651355b98782c7bbd5f9668c57.scn"]
+source_file="res://models/maxwell.glb"
+dest_files=["res://.godot/imported/maxwell.glb-54bfdc33bb55f579cdff84b7af7d1e89.scn"]
 
 [params]
 
@@ -40,7 +40,7 @@ _subresources={
 }
 },
 "meshes": {
-"Root Scene_dingus": {
+"maxwell_dingus": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
