@@ -10,6 +10,9 @@ var velocity = null
 func _ready():
 	RigidBody.set_linear_velocity(velocity)
 	RigidBody.gravity_scale = Gravity
+	$RigidBody3D/Smoothing.teleport()
+	if DieOnTerrain:
+		RigidBody.contact_monitor = true
 	pass # Replace with function body.
 
 func _afterlerp():
@@ -28,17 +31,18 @@ func initialize(pos,vel,projconfig):
 
 	transform = pos
 	velocity = vel
-	$RigidBody3D/Smoothing.teleport()
+	#$RigidBody3D/Smoothing.teleport()
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	#$RigidBody3D/Smoothing.teleport()
 	ProjLifetime += delta
 	if ProjLifetime > ProjMaxLifetime:
 		queue_free()
 	pass
 
 func _physics_process(delta):
-	if DieOnTerrain == true and RigidBody.get_contact_count() > 1:
+	if DieOnTerrain == true and RigidBody.max_contacts_reported > 1:
 		queue_free()
 	pass

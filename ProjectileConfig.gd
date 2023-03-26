@@ -23,7 +23,7 @@ func _init(dict={}):
 	self.DieOnTerrain = setVar(self.DieOnTerrain,"DieOnTerrain",dict)
 	self.ProjMaxLifetime = setVar(self.ProjMaxLifetime,"ProjMaxLifetime",dict)
 	
-	if "Model" in dict:
+	if "Model" in dict and dict["Model"]:
 		self.Model = load(dict["Model"])
 
 func setVar(val,index,dict):

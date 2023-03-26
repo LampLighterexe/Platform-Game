@@ -3,8 +3,8 @@ extends CharacterBody3D
 const AIRSPEED = 0.2
 const SPEED = 1.0
 const JUMP_VELOCITY = 6
-const AIRDECEL = 0.98
-const GROUNDDECEL = 0.8
+const AIRDECEL = 0.30
+const GROUNDDECEL = 0.0001
 
 var CameraSens = 0.0025
 var movement1_charge = true
@@ -33,7 +33,6 @@ func _ready():
 	ViewModelCamera.set_environment(MainEnv)
 	
 func _afterlerp():
-	#return
 	ViewModelCamera.global_transform = camera.global_transform
 
 func _physics_process(delta):
@@ -61,15 +60,13 @@ func _physics_process(delta):
 			direction = (neck.transform.basis * Vector3(0, 0, -1)).normalized()
 		wishdir += (direction*(SPEED*10))
 		movement1_charge = false
-	#var frictionFactor
+	
 	if is_on_floor():
-		#frictionFactor = GROUNDDECEL^delta
-		wishdir.x *= GROUNDDECEL #GetDecelFraction(GROUNDDECEL,delta)
-		wishdir.z *= GROUNDDECEL #GetDecelFraction(GROUNDDECEL,delta)
+		wishdir.x *= GROUNDDECEL**delta
+		wishdir.z *= GROUNDDECEL**delta
 	else:
-		#frictionFactor = log(AIRDECEL, delta)
-		wishdir.x *= AIRDECEL #GetDecelFraction(AIRDECEL,delta)
-		wishdir.z *= AIRDECEL #GetDecelFraction(AIRDECEL,delta)
+		wishdir.x *= AIRDECEL**delta
+		wishdir.z *= AIRDECEL**delta
 		
 	velocity.x = wishdir.x
 	velocity.z = wishdir.z

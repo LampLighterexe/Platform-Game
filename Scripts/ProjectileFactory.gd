@@ -9,10 +9,13 @@ func _init():
 		"Damage":1,
 		"Model":"res://models/exported/maxwell.res",
 		"Gravity":0.5
-	}
-	))
-	
-	pass
+	}))
+	register("freeze_ray",ProjectileConfig.new({
+		"Damage":1,
+		"Model":"res://models/exported/cube.res",
+		"Gravity":0,
+		"ProjMaxLifetime":1
+	}))
 
 func register(projname, projconfig):
 	ProjectileDict[projname] = projconfig
