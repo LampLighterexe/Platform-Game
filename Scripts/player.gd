@@ -1,5 +1,26 @@
 extends CharacterBody3D
 
+var Team = "player"
+
+signal HealthChanged
+var MaxHealth = 100
+
+var Health: float:
+	get:
+		return Health
+	set(v):
+		Health = v
+		if Health < 0:
+			Health = 0
+		HealthChanged.emit(Health,MaxHealth)
+
+func takeDamage(damage):
+	Health -= damage
+	pass
+	
+func isAlive():
+	return Health > 0
+
 const AIRSPEED = 0.2
 const SPEED = 1.0
 const JUMP_VELOCITY = 6
@@ -33,6 +54,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _ready():
+	Health = MaxHealth
 	var MainEnv = camera.get_environment()
 	ViewModelCamera.set_environment(MainEnv)
 	
@@ -42,6 +64,7 @@ func _afterlerp():
 
 func _physics_process(delta):
 	# Add the gravity.
+	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
@@ -77,7 +100,6 @@ func _physics_process(delta):
 	velocity.z = wishdir.z
 	var was_on_floor = is_on_floor()
 	move_and_slide()
-	
 	if Input.is_action_just_pressed("jump") and is_on_wall() and not was_on_floor:
 		velocity += (get_wall_normal()*(SPEED*8))
 		velocity.y = JUMP_VELOCITY*0.9

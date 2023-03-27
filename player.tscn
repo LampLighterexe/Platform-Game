@@ -1,10 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://cmolmb4vvryp0"]
+[gd_scene load_steps=18 format=3 uid="uid://cmolmb4vvryp0"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_hxdw1"]
 [ext_resource type="Script" path="res://Scripts/WeaponController.gd" id="2_0stnl"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_oxmek"]
+[ext_resource type="Texture2D" uid="uid://r22ds8jv8pc1" path="res://health_bar_background.png" id="3_cyo1g"]
+[ext_resource type="Script" path="res://UI.gd" id="3_ngbup"]
 [ext_resource type="PackedScene" uid="uid://cscogdcs4a472" path="res://models/view_arms.glb" id="4_0kumh"]
 [ext_resource type="PackedScene" uid="uid://dn7wd0eb23u2d" path="res://reefslider_avatar_uv.fbx" id="4_jh1ov"]
+[ext_resource type="Texture2D" uid="uid://hgdk6j0bkrys" path="res://health_bar.png" id="4_x3urk"]
+[ext_resource type="Script" path="res://HealthBar.gd" id="5_2amla"]
+[ext_resource type="Texture2D" uid="uid://dyxj8s5usqtso" path="res://crosshair.png" id="5_g5qys"]
 
 [sub_resource type="Animation" id="Animation_xbd82"]
 resource_name = "w_freeze_ray"
@@ -66,13 +71,18 @@ _data = {
 "w_maxwell": SubResource("Animation_ygai1")
 }
 
+[sub_resource type="LabelSettings" id="LabelSettings_qyjc7"]
+font_size = 162
+outline_size = 32
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gepx3"]
 albedo_color = Color(0.784314, 0.784314, 0.784314, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_02w5n"]
 
 [node name="Player" type="CharacterBody3D"]
-collision_layer = 0
+collision_layer = 16
 script = ExtResource("1_hxdw1")
 
 [node name="WeaponController" type="Node" parent="."]
@@ -112,6 +122,56 @@ render_target_update_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58228, 0)
 cull_mask = 2
 fov = 90.0
+
+[node name="UI" type="SubViewportContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+script = ExtResource("3_ngbup")
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/UI"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1600, 900)
+render_target_update_mode = 4
+
+[node name="HealthBarBackground" type="Sprite2D" parent="CanvasLayer/UI/SubViewport"]
+position = Vector2(212, 814)
+scale = Vector2(0.3, 0.306667)
+texture = ExtResource("3_cyo1g")
+script = ExtResource("5_2amla")
+
+[node name="HealthBar" type="Sprite2D" parent="CanvasLayer/UI/SubViewport/HealthBarBackground"]
+position = Vector2(-600, -150)
+texture = ExtResource("4_x3urk")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 1200, 300)
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/SubViewport/HealthBarBackground"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -738.0
+offset_top = -262.5
+offset_right = -462.0
+offset_bottom = -37.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "100"
+label_settings = SubResource("LabelSettings_qyjc7")
+
+[node name="Crosshair" type="Sprite2D" parent="CanvasLayer/UI/SubViewport"]
+position = Vector2(800, 450)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("5_g5qys")
 
 [node name="Smoothing" type="Node3D" parent="."]
 script = ExtResource("2_oxmek")
@@ -159,6 +219,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_02w5n")
 
 [node name="Aim" type="Node3D" parent="."]
+
+[connection signal="HealthChanged" from="." to="CanvasLayer/UI/SubViewport/HealthBarBackground" method="_on_player_health_changed"]
+[connection signal="size_changed" from="CanvasLayer/UI/SubViewport" to="CanvasLayer/UI" method="_on_sub_viewport_size_changed"]
 
 [editable path="Smoothing/Neck/Camera3D/view_arms"]
 [editable path="Smoothing/Neck/reefslider_avatar_uv"]

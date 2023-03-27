@@ -20,7 +20,8 @@ func _init():
 		"AttachOffset":Vector3(-0.3,0,0.5),
 		"Size":0.5,
 		"ForceDir":true,
-		"ProjMaxLifetime":1
+		"ProjMaxLifetime":1,
+		"DeathProjectile":"explosion"
 	}))
 	register("fist",ProjectileConfig.new({
 		"Damage":10,
@@ -33,6 +34,18 @@ func _init():
 		"Size":Vector3(1.5,1,3),
 		"ProjMaxLifetime":0.1
 	}))
+	register("sniper",ProjectileConfig.new({
+		"Damage":10,
+		"Model":null,
+		"HitboxShape":"Cube",
+		"Gravity":0,
+		"AttachToOwner":true,
+		"PhysicsEnabled":false,
+		"AttachOffset":Vector3(0,0,15),
+		"Size":Vector3(0.05,0.05,30),
+		"PierceCount":5,
+		"ProjMaxLifetime":0.033
+	}))
 	register("debug",ProjectileConfig.new({
 		"Damage":10,
 		"Model":null,
@@ -42,6 +55,18 @@ func _init():
 		"PhysicsEnabled":false,
 		"AttachOffset":Vector3(0,0,0.5),
 		"Size":1
+	}))
+	register("explosion",ProjectileConfig.new({
+		"Damage":15,
+		"Model":null,
+		"Gravity":0,
+		"AttachToOwner":false,
+		"DieOnTerrain":false,
+		"PhysicsEnabled":false,
+		"AttachOffset":Vector3(0,0,0),
+		"Size":3,
+		"PierceCount":9999,
+		"ProjMaxLifetime":0.033
 	}))
 
 func register(projname, projconfig):
