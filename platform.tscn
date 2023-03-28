@@ -1,4 +1,5 @@
-[gd_scene load_steps=17 format=3 uid="uid://6mvxedfxd81g"]
+
+[gd_scene load_steps=18 format=3 uid="uid://6mvxedfxd81g"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_g0n7h"]
 [ext_resource type="Material" path="res://Materials/grass.tres" id="1_hynry"]
@@ -7,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://r22ds8jv8pc1" path="res://health_bar_background.png" id="7_djbed"]
 [ext_resource type="Script" path="res://HealthBar.gd" id="8_5unws"]
 [ext_resource type="Texture2D" uid="uid://hgdk6j0bkrys" path="res://health_bar.png" id="9_nebjw"]
+[ext_resource type="Script" path="res://Score.gd" id="9_pg3kw"]
 [ext_resource type="Texture2D" uid="uid://dyxj8s5usqtso" path="res://crosshair.png" id="10_q8isr"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_qag1e"]
@@ -231,6 +233,7 @@ offset_bottom = 26.0
 scale = Vector2(1.5, 1.5)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Sorce: 0"
+script = ExtResource("9_pg3kw")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player.tscn")
