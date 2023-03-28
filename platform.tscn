@@ -1,3 +1,4 @@
+
 [gd_scene load_steps=18 format=3 uid="uid://6mvxedfxd81g"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_g0n7h"]
@@ -226,7 +227,7 @@ position = Vector2(800, 450)
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("10_q8isr")
 
-[node name="Score" type="Label" parent="HUD/SubViewportContainer/SubViewport"]
+[node name="Label" type="Label" parent="HUD/SubViewportContainer/SubViewport"]
 offset_right = 61.0
 offset_bottom = 26.0
 scale = Vector2(1.5, 1.5)
