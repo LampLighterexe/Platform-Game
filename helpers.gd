@@ -28,3 +28,11 @@ func createSound(s,s2,obj=null):
 	else:
 		sound.global_transform = s.global_transform
 		add_child(sound)
+
+@rpc("any_peer","call_local")
+func networkDamage(e,d):
+	EntityManager.getEntity(e).takeDamage.rpc(d)
+	
+
+func dealDamage(eID,damage):
+	networkDamage.rpc_id(1,eID,damage)

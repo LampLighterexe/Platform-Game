@@ -9,7 +9,6 @@ var Health: float:
 	get:
 		return Health
 	set(v):
-		if not is_multiplayer_authority(): return
 		if v < 0.0:
 			v = 0.0
 		if v > MaxHealth:
@@ -17,12 +16,11 @@ var Health: float:
 			
 		Health = v
 		
-		syncHealth.rpc(Health)
+		#syncHealth.rpc(Health)
 		HealthChanged.emit(Health,MaxHealth)
 
 @rpc("any_peer")
 func syncHealth(h):
-	print("f",h)
 	Health = h
 
 @rpc("call_local")
@@ -83,6 +81,7 @@ func _ready():
 		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel.set_layer_mask_value(2,false)
 		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube.set_layer_mask_value(1,true)
 		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube.set_layer_mask_value(2,false)
+		Health = 100
 		return 
 	$WeaponController.set_multiplayer_authority(str(name).to_int())
 	Health = MaxHealth
@@ -95,7 +94,9 @@ func _afterlerp():
 	Aim.global_transform = camera.global_transform
 
 func _process(delta):
-	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): 
+		Health = 100
+		return
 	lastDamageTime += delta
 	if lastDamageTime > 3.0 and Health < MaxHealth:
 		Health+=(MaxHealth*0.1)*delta

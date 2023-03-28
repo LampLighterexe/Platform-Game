@@ -15,3 +15,5 @@ func isEntityVaild(e):
 func isEntityNameVaild(e):
 	if "_"+e in EntityDict:
 		return true
+
+
