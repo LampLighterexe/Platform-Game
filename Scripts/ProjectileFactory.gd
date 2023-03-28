@@ -9,9 +9,10 @@ func _init():
 		"Damage":15,
 		"Model":"res://models/exported/maxwell.res",
 		"Gravity":0.5,
-		"Size":Vector3(2,2,2),
+		"Size":2,
 		"PierceCount":5,
 		"DieOnTerrain":false,
+		"HitSound":preload("res://Sounds/cat.mp3")
 	}))
 	register("freeze_ray",ProjectileConfig.new({
 		"Damage":1,
@@ -32,7 +33,8 @@ func _init():
 		"PhysicsEnabled":false,
 		"AttachOffset":Vector3(0,0,1),
 		"Size":Vector3(1.5,1,3),
-		"ProjMaxLifetime":0.1
+		"ProjMaxLifetime":0.1,
+		"HitSound":preload("res://Sounds/crash.wav")
 	}))
 	register("sniper",ProjectileConfig.new({
 		"Damage":10,

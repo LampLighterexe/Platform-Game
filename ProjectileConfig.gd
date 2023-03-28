@@ -16,7 +16,11 @@ var AttachOffset = Vector3(0,0,0)
 var Size = 1.0
 var ForceDir = false
 var DeathProjectile = null
+var HitSound = null
+var DeathSound = null
+var SpawnSound = null
 var SetVars = {}
+
 func _init(dict={}):
 	for entry in dict:
 		self[entry] = dict[entry]

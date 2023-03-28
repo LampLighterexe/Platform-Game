@@ -8,6 +8,8 @@ var Owner = null
 var ProjLifetime = 0
 var velocity = null
 var EnemyList = []
+var QueuedDeath = false
+var Authority = 0
 var Team = "none"
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -45,18 +47,23 @@ func _ready():
 	if DieOnTerrain:
 		RigidBody.contact_monitor = true
 		RigidBody.max_contacts_reported = 1
+		
+	if SpawnSound:
+		Helpers.createSound($RigidBody3D/Audio,SpawnSound)
+		
 	$RigidBody3D/Smoothing.teleport()
 
 func _afterlerp():
 	pass
 
 
-func initialize(pos,vel,projconfig,body,team):
+func initialize(pos,vel,projconfig,body,team, auth):
 	for entry in projconfig.SetVars:
 		self[entry] = projconfig[entry]
-	
+	Authority = auth
+	set_multiplayer_authority(Authority)
 	$RigidBody3D/Smoothing/model.mesh = Model
-	
+
 	Owner = body
 	if Owner:
 		transform = pos.translated(Owner.get_global_transform().basis*-AttachOffset)
@@ -76,13 +83,20 @@ func sort_ascending(a, b):
 	if a[1] < b[1]:
 		return true
 	return false
-
+	
+@rpc("any_peer","call_local")
+func dealDamage(e,d):
+	print(get_multiplayer_authority()," ",e," ",EntityManager.getEntity(e))
+	
+	EntityManager.getEntity(e).takeDamage.rpc(d)
+	pass
+	
 func AttackEnemies(l):
 	for i in l:
 		if i[0].has_method("takeDamage"):
-			#print(i[0],i[1])
+			#print(i[0],i[0].isAlive())
 			if PierceCount > 0 and i[0].isAlive():
-				i[0].takeDamage(Damage)
+				dealDamage.rpc_id(1,i[0].name,Damage) #,i[0].takeDamage.rpc(Damage)
 				PierceCount -= 1
 			if DieOnHit and PierceCount < 1:
 				Die()
@@ -91,8 +105,10 @@ func _physics_process(delta):
 	if EnemyList.size() > 0:
 		EnemyList.sort_custom(sort_ascending)
 		AttackEnemies(EnemyList)
+		if HitSound:
+			Helpers.createSound($RigidBody3D/Audio,HitSound)
 		EnemyList.clear()
-	if AttachToOwner:
+	if AttachToOwner and Owner:
 		transform = Owner.global_transform.translated(Owner.get_global_transform().basis*-AttachOffset)
 	if ForceDir:
 		$RigidBody3D/Smoothing/model.look_at(self.position+RigidBody.get_linear_velocity())
@@ -102,15 +118,21 @@ func _physics_process(delta):
 	
 
 func Die():
-	if DeathProjectile:
-		Helpers.CreateProjectile(
-			RigidBody.global_transform,
-			RigidBody.get_linear_velocity(),
-			DeathProjectile,
-			null,
-			Team
-		)
-	queue_free()
+	if not QueuedDeath:
+		if DeathProjectile and not QueuedDeath:
+			Helpers.createProjectile(
+				RigidBody.global_transform,
+				RigidBody.get_linear_velocity(),
+				DeathProjectile,
+				null,
+				Team,
+				Authority
+			)
+		if DeathSound:
+					Helpers.createSound($RigidBody3D/Audio,DeathSound)
+		QueuedDeath = true
+		queue_free()
+		
 
 func _on_rigid_body_3d_body_entered(_body):
 	if DieOnTerrain == true:
@@ -119,7 +141,7 @@ func _on_rigid_body_3d_body_entered(_body):
 
 func _on_area_3d_body_entered(body):
 	var pos = RigidBody.global_position
-	if AttachToOwner:
+	if AttachToOwner and Owner:
 		pos = Owner.global_position
 
 	EnemyList.append([body,body.global_position.distance_to(pos)])

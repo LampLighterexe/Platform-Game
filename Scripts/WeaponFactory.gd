@@ -19,6 +19,9 @@ func _init():
 			"FireAnim":"w_maxwell",
 			"Model":"res://models/exported/maxwell.res",
 			"Projectile":"maxwell",
+			"Clip":6,
+			"MaxAmmo":6,
+			"ReloadSound":preload("res://Sounds/maxwell_reload.mp3"),
 			"ProjXSpeed":8,
 			"ProjYSpeed":2
 	}))

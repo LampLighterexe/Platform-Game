@@ -3,16 +3,20 @@ extends Node
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not is_multiplayer_authority(): return
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.button_index == 1:
-			if Weapons[WeaponSlot].CanFire() and CurrentState == "idle":
-				CurrentState = "fire"
+			if CurrentWeapon.CanFire() and CurrentState == "idle":
+				setCurrentState("fire")
+			elif CurrentState == "idle":
+				setCurrentState("reload")
 		if event.button_index == 4:
 			ChangeWeaponSlot(-1)
 			
 		if event.button_index == 5:
 			ChangeWeaponSlot(1)
-
+	if Input.is_action_just_pressed("reload") and CurrentState == "idle" and CurrentWeapon.CanReload():
+		setCurrentState("reload")
 
 @onready var ViewModelAnim := $"../Smoothing/Neck/Camera3D/view_arms/AnimationPlayer"
 @onready var ViewModelWeapon := $"../Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel"
@@ -34,41 +38,46 @@ func _ready():
 	]
 
 func FireCurrentWeapon():
-	#print("fired weapon! " + CurrentWeapon.weaponname)
 	if not CurrentState == "fire":
 		return
-	Helpers.CreateProjectile(
-		Aim.global_transform,
-		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
-		CurrentWeapon.Projectile,
-		Aim,
-		Player.Team
-	)
+	Helpers.createSound($"../PlayerSound",CurrentWeapon.FireSound,Aim)
+	CurrentWeapon.RemoveClip(1)
 	
-func ChangeWeaponSlot(dir):
-	WeaponSlot += dir
-	if WeaponSlot < 0:
-		WeaponSlot = len(Weapons)-1
-	if WeaponSlot > len(Weapons)-1:
-		WeaponSlot = 0
-		#print(dir,WeaponSlot,len(Weapons))
+	if not is_multiplayer_authority(): return
+	networkCreateProjectile.rpc(get_multiplayer_authority())
+	
+#	Helpers.createProjectile(
+#		Aim.global_transform,
+#		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
+#		CurrentWeapon.Projectile,
+#		Aim,
+#		Player.Team,
+#		auth
+#	)
+
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	CurrentWeapon = Weapons[WeaponSlot]
 	if not CurrentWeapon:
 		return
-	
+
 	if LastWeaponSlot!= WeaponSlot:
 		WeaponFire.stop()
 		ViewModelAnim.stop()
-		CurrentState = "idle"
+		setCurrentState("idle")
+		for n in Aim.get_children():
+			if n is AudioStreamPlayer3D:
+				Aim.remove_child(n)
+				n.queue_free()
 	LastWeaponSlot = WeaponSlot
-	
-	if CurrentState == "idle" and CurrentWeapon.Automatic and CurrentWeapon.CanFire() and Input.is_action_pressed("autofire"):
-		CurrentState = "fire"
+
+	if is_multiplayer_authority() and Input.is_action_pressed("autofire") and CurrentState == "idle" and CurrentWeapon.Automatic and CurrentWeapon.CanFire():
+		setCurrentState("fire")
+
 	if ViewModelAnim:
-		#print(ViewModelAnim.current_animation)
+		
 		if CurrentState == "idle":
 			if not ViewModelAnim.is_playing() and ViewModelAnim.current_animation != getAnim(CurrentWeapon,CurrentState):
 				ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState))
@@ -79,7 +88,16 @@ func _process(_delta):
 				WeaponFire.play(CurrentWeapon.FireAnim,0.0,CurrentWeapon.FireSpeed)
 				ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.1,CurrentWeapon.FireSpeed)
 			if not ViewModelAnim.is_playing():
-				CurrentState = "idle"
+				setCurrentState("idle")
+
+		if CurrentState == "reload":
+			if LastState != "reload":
+				ViewModelAnim.stop()
+				ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState))
+				Helpers.createSound($"../PlayerSound",CurrentWeapon.ReloadSound,Aim)
+			if not ViewModelAnim.is_playing():
+				CurrentWeapon.RefillClip()
+				setCurrentState("idle")
 
 		if Weapons[WeaponSlot].Model:
 			ViewModelWeapon.mesh = Weapons[WeaponSlot].Model
@@ -89,5 +107,39 @@ func _process(_delta):
 	LastState = CurrentState
 
 
+func ChangeWeaponSlot(dir):
+	WeaponSlot += dir
+	if WeaponSlot < 0:
+		WeaponSlot = len(Weapons)-1
+	if WeaponSlot > len(Weapons)-1:
+		WeaponSlot = 0
+	if not is_multiplayer_authority(): return
+	networkWeaponSlot.rpc(WeaponSlot)
+
+@rpc("call_local")
+func networkWeaponSlot(weaponslot):
+	WeaponSlot = weaponslot
+	
+@rpc("call_local")
+func networkCurrentState(state):
+	CurrentState = state
+	
+	
+@rpc("call_local")
+func networkCreateProjectile(auth):
+	Helpers.createProjectile(
+		Aim.global_transform,
+		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
+		CurrentWeapon.Projectile,
+		Aim,
+		Player.Team,
+		auth
+	)
+	
+func setCurrentState(state):
+	CurrentState = state
+	if not is_multiplayer_authority(): return
+	networkCurrentState.rpc(CurrentState)
+	
 func getAnim(w,s):
 	return w.AnimationSet+"_"+s

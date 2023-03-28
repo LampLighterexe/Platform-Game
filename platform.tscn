@@ -1,10 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://jp58cw1wqllv"]
+[gd_scene load_steps=17 format=3 uid="uid://jp58cw1wqllv"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_g0n7h"]
 [ext_resource type="Material" path="res://Materials/grass.tres" id="1_hynry"]
-[ext_resource type="PackedScene" uid="uid://cmolmb4vvryp0" path="res://player.tscn" id="1_xdm25"]
 [ext_resource type="ArrayMesh" uid="uid://cu5riwrcl721y" path="res://models/exported/platform.res" id="2_0jhch"]
-[ext_resource type="PackedScene" uid="uid://7hyycix15vai" path="res://Enemy.tscn" id="5_sphxg"]
+[ext_resource type="Script" path="res://UI.gd" id="6_bhn31"]
+[ext_resource type="Texture2D" uid="uid://r22ds8jv8pc1" path="res://health_bar_background.png" id="7_djbed"]
+[ext_resource type="Script" path="res://HealthBar.gd" id="8_5unws"]
+[ext_resource type="Texture2D" uid="uid://hgdk6j0bkrys" path="res://health_bar.png" id="9_nebjw"]
+[ext_resource type="Texture2D" uid="uid://dyxj8s5usqtso" path="res://crosshair.png" id="10_q8isr"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_qag1e"]
 vertices = PackedVector3Array(-3.61017, -1.66385, -5.63367, -1.36017, -1.66385, -5.88367, -1.36017, -1.66385, -7.88367, -3.61017, -1.91385, -8.13367, -3.61017, -1.66385, -5.63367, -3.61017, -1.91385, -8.13367, -11.8602, -2.41385, -13.1337, -3.61017, -1.91385, -9.88367, -2.36017, -1.91385, -10.1337, -2.86017, -2.41385, -16.3837, -11.1102, -2.41385, -15.1337, -11.8602, -2.41385, -13.1337, -11.8602, -2.41385, -13.1337, -14.1102, -2.41385, -10.6337, -14.8602, -2.41385, -5.38367, -14.6102, -2.41385, 0.116331, -3.36017, -1.16385, -0.633669, -3.61017, -1.66385, -5.63367, -6.17267, -1.91385, -0.446169, -3.61017, -1.91385, -8.13367, -3.61017, -1.91385, -9.88367, -11.8602, -2.41385, -13.1337, 3.38983, -1.66385, -5.88367, 3.63983, -1.16385, -4.38367, 4.13983, -1.41385, -4.13367, 4.38983, -2.16385, -10.6337, 3.63983, -2.16385, -9.88367, 3.38983, -1.91385, -7.88367, -2.36017, -1.91385, -10.1337, 3.63983, -2.16385, -9.88367, 4.38983, -2.16385, -10.6337, 7.88983, -2.66385, -15.6337, -2.86017, -2.41385, -16.3837, 3.38983, -1.91385, -7.88367, -1.36017, -1.66385, -7.88367, -1.36017, -1.66385, -5.88367, 3.38983, -1.66385, -5.88367, 15.1398, -2.41385, -10.6337, 15.1398, -2.41385, -11.1337, 7.88983, -2.66385, -15.6337, 4.38983, -2.16385, -10.6337, 5.13983, 3.33615, -9.63367, 5.13983, 3.33615, 0.366331, 9.63983, 3.33615, 0.366331, 9.63983, 3.33615, -9.63367, 10.6398, 4.58615, -9.63367, 10.6398, 4.58615, 0.366331, 15.3898, 4.58615, 0.366331, 15.3898, 4.58615, -9.63367, 5.63983, -1.16385, 0.116331, 9.63983, -1.91385, 0.116331, 9.63983, -2.41385, -9.38367, 5.38983, -2.16385, -9.38367, 5.60412, -1.16385, -1.24081, 10.8898, -2.41385, -9.38367, 10.8898, -2.16385, 0.116331, 15.1398, -2.41385, 0.116331, 15.1398, -2.41385, -9.38367, 17.6398, -2.41385, -5.13367, 17.6398, -2.41385, -7.13367, 16.3898, -2.41385, -8.63367, 16.3898, -2.41385, -0.133669, 17.1398, -2.41385, -1.13367, -1.36017, -0.66385, 1.61633, -0.860168, -0.66385, 2.11633, -0.610168, -0.41385, 1.61633, -1.36017, -0.41385, 0.616331, 0.139832, -0.41385, 1.61633, 0.389832, -0.41385, 2.11633, 4.38983, -0.66385, 1.36633, 2.97317, -0.41385, 1.44967, 3.0565, -0.41385, 1.61633, -1.36017, -0.41385, 0.616331, -0.610168, -0.41385, 1.61633, 0.139832, -0.41385, 1.61633, -2.61017, -0.41385, -1.38367, -2.11017, -0.41385, -3.63367, -2.61017, -0.41385, -2.88367, -2.61017, -0.41385, -1.38367, -2.61017, -0.41385, -1.38367, -2.11017, -0.41385, 0.116331, -1.36017, -0.41385, 0.616331, 4.38983, -0.66385, 1.36633, 4.13983, -0.41385, -2.63367, 3.13983, -0.41385, -3.63367, -2.11017, -0.41385, -3.63367, -2.61017, -0.41385, -1.38367, 0.139832, -0.41385, 1.61633, 2.97317, -0.41385, 1.44967, 4.3065, -0.41385, 0.0329971, -2.61017, -0.91385, 1.11633, -2.61017, -0.66385, 0.116331, -3.11017, -1.16385, 0.116331, -14.6102, -2.41385, 0.116331, -14.6102, -2.41385, 3.61633, -13.8602, -2.41385, 8.11633, -9.11017, -2.41385, 10.8663, -2.61017, -0.91385, 1.11633, -3.11017, -1.16385, 0.116331, -5.98517, -1.91385, 0.116331, -5.04767, -2.16385, 4.77258, -3.11017, -1.16385, 0.116331, -3.36017, -1.16385, -0.633669, -14.6102, -2.41385, 0.116331, -5.98517, -1.91385, 0.116331, -6.17267, -1.91385, -0.446169, -9.11017, -2.41385, 10.8663, -3.11017, -2.41385, 15.6163, -1.86017, -0.91385, 1.61633, -2.61017, -0.91385, 1.11633, -5.04767, -2.16385, 4.77258, -2.48517, -2.41385, 8.61633, 4.38983, -0.66385, 1.36633, 0.389832, -0.41385, 2.11633, -0.110168, -1.16385, 2.86633, 2.13983, -0.41385, 2.11633, 3.0565, -0.41385, 1.61633, 12.1398, -2.41385, 8.86633, 15.8898, -2.41385, 1.61633, 4.38983, -0.66385, 1.36633, 7.29608, -2.16385, 4.17883, 7.26483, -1.91385, 1.42883, 3.88983, -2.41385, 16.3663, 10.6398, -2.41385, 13.3663, 12.1398, -2.41385, 8.86633, 4.38983, -0.66385, 1.36633, -0.110168, -1.16385, 2.86633, -0.110168, -2.41385, 16.3663, 7.29608, -2.16385, 4.17883, 2.13983, -0.41385, 2.11633, -0.110168, -2.16385, 6.91633, 1.14984, -1.66385, 4.10232, -0.860168, -1.16385, 2.61633, -0.860168, -0.66385, 2.11633, -1.36017, -0.66385, 1.61633, -1.86017, -0.91385, 1.61633, -3.11017, -2.41385, 15.6163, -1.11017, -1.91385, 4.06078, -2.48517, -2.41385, 8.61633, -3.11017, -2.41385, 15.6163, -0.110168, -2.41385, 16.3663, -0.110168, -1.16385, 2.86633, -0.860168, -1.16385, 2.61633, -1.11017, -1.91385, 4.06078, -0.110168, -2.16385, 6.91633)
@@ -36,6 +39,11 @@ ambient_light_sky_contribution = 0.5
 fog_light_color = Color(0.133643, 0.742311, 0.763956, 1)
 fog_density = 0.0
 fog_aerial_perspective = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_8gv2q"]
+font_size = 162
+outline_size = 32
+outline_color = Color(0, 0, 0, 1)
 
 [node name="World" type="Node"]
 script = ExtResource("1_g0n7h")
@@ -121,7 +129,107 @@ light_color = Color(1, 1, 0.901961, 1)
 shadow_enabled = true
 shadow_blur = 3.19
 
-[node name="Player" parent="." instance=ExtResource("1_xdm25")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Enemy" parent="." instance=ExtResource("5_sphxg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.38629, -2.49741, 6.44978)
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 613.0
+offset_top = 346.0
+offset_right = -613.0
+offset_bottom = -346.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Platform Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HostButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[node name="AddressEntry" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Enter Address to Join Here"
+alignment = 1
+
+[node name="HUD" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+script = ExtResource("6_bhn31")
+
+[node name="SubViewport" type="SubViewport" parent="HUD/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1600, 900)
+render_target_update_mode = 0
+
+[node name="HealthBarBackground" type="Sprite2D" parent="HUD/SubViewportContainer/SubViewport"]
+position = Vector2(212, 814)
+scale = Vector2(0.3, 0.306667)
+texture = ExtResource("7_djbed")
+script = ExtResource("8_5unws")
+
+[node name="HealthBar" type="Sprite2D" parent="HUD/SubViewportContainer/SubViewport/HealthBarBackground"]
+position = Vector2(-600, -150)
+texture = ExtResource("9_nebjw")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 1200, 300)
+
+[node name="Label" type="Label" parent="HUD/SubViewportContainer/SubViewport/HealthBarBackground"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -738.0
+offset_top = -262.5
+offset_right = -462.0
+offset_bottom = -37.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "100"
+label_settings = SubResource("LabelSettings_8gv2q")
+
+[node name="Crosshair" type="Sprite2D" parent="HUD/SubViewportContainer/SubViewport"]
+position = Vector2(800, 450)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("10_q8isr")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("..")
+
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="size_changed" from="HUD/SubViewportContainer/SubViewport" to="HUD/SubViewportContainer" method="_on_sub_viewport_size_changed"]
+[connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]

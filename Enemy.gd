@@ -38,14 +38,16 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	move_and_slide()
 
 func attack():
-	Helpers.CreateProjectile(
+	Helpers.createProjectile(
 		global_transform,
 		Vector3(0,0,0),
 		"explosion",
 		Aim,
-		self.Team
+		self.Team,
+		get_multiplayer_authority()
 	)
 
+@rpc("any_peer", "call_local")
 func takeDamage(damage):
 	health -= damage
 	Helpers.createParticles($CPUParticles3D)
