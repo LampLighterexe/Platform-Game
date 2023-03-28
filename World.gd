@@ -42,6 +42,11 @@ func _physics_process(delta):
 	if enemytarget.size() > 0:
 		get_tree().call_group("enemies","update_target_location", enemytarget[0].global_transform.origin)
 
+#Work in progress connecting moster death to gain points
+#I got it -Matthew
+#func _enemyDeath():
+#	enemy.isALive.connect()
+
 	
 func _on_host_button_pressed():
 	main_menu.hide()
