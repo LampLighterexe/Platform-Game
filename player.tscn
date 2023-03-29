@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cmolmb4vvryp0"]
+[gd_scene load_steps=12 format=3 uid="uid://cmolmb4vvryp0"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_hxdw1"]
 [ext_resource type="Script" path="res://Scripts/WeaponController.gd" id="2_0stnl"]
@@ -66,9 +66,6 @@ _data = {
 "w_maxwell": SubResource("Animation_ygai1")
 }
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gepx3"]
-albedo_color = Color(0.784314, 0.784314, 0.784314, 1)
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_02w5n"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_xilu7"]
@@ -135,11 +132,11 @@ flags = 55
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58228, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Smoothing/Neck"]
-cull_mask = 1048573
+cull_mask = 1048061
 fov = 90.0
 
 [node name="view_arms" parent="Smoothing/Neck/Camera3D" instance=ExtResource("4_0kumh")]
-transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -0.6, 0)
+transform = Transform3D(-0.3, 0, 2.62268e-08, 0, 0.3, 0, -2.62268e-08, 0, -0.3, 0, -0.6, 0)
 
 [node name="Skeleton3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature" index="0"]
 bones/1/rotation = Quaternion(-0.256904, 0.0998075, -0.278964, 0.919901)
@@ -155,10 +152,9 @@ bones/9/rotation = Quaternion(-1.16093e-08, 4.84288e-08, -6.52019e-08, 1)
 
 [node name="Cube" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="0"]
 layers = 2
-material_override = SubResource("StandardMaterial3D_gepx3")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.976775, 0.131744, 0.168983, 0.0839381, -0.96088, 0.263942, 0.197145, -0.243628, -0.949621, 0.603251, 0.580617, 1.53882)
+transform = Transform3D(0.976775, 0.131744, 0.168982, 0.0839382, -0.960879, 0.263942, 0.197144, -0.243628, -0.949621, 0.603251, 0.580617, 1.53882)
 bone_name = "rightarmweapon"
 bone_idx = 5
 

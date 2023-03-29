@@ -89,10 +89,10 @@ func add_player(peer_id):
 	EntityManager.addEntity(player)
 	
 	if player.is_multiplayer_authority():
-		player.HealthChanged.connect(update_health_barb)
+		player.HealthChanged.connect(update_health_bar)
 
 
-func update_health_barb(h,mh):
+func update_health_bar(h,mh):
 	health_bar.update_health_bar(h,mh)
 
 func remove_player(peer_id):
@@ -102,7 +102,7 @@ func remove_player(peer_id):
 
 func _on_multiplayer_spawner_spawned(node):
 	if node.is_multiplayer_authority():
-		node.HealthChanged.connect(update_health_barb)
+		node.HealthChanged.connect(update_health_bar)
 
 func upnp_setup():
 	var upnp = UPNP.new()

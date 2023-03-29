@@ -5,6 +5,7 @@ class_name ProjectileFactory
 var ProjectileDict = {}
 
 func _init():
+	register("default",ProjectileConfig.new({}))
 	register("maxwell",ProjectileConfig.new({
 		"Damage":15,
 		"Model":"res://models/exported/maxwell.res",
@@ -74,4 +75,7 @@ func register(projname, projconfig):
 	ProjectileDict[projname] = projconfig
 	
 func getProjectile(projname):
-	return ProjectileDict[projname]
+	if projname in ProjectileDict:
+		return ProjectileDict[projname]
+	push_warning("Could not find ",projname," in registry!")
+	return ProjectileDict["default"]

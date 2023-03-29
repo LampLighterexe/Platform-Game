@@ -175,7 +175,6 @@ alignment = 1
 
 [node name="UPnP" type="CheckButton" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
-button_pressed = true
 text = "UPnP (automatic portforward)"
 
 [node name="HUD" type="CanvasLayer" parent="."]

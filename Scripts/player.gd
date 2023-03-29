@@ -16,7 +16,8 @@ var Health: float:
 			
 		Health = v
 		
-		#syncHealth.rpc(Health)
+		if not is_multiplayer_authority(): return
+		syncHealth.rpc(Health)
 		HealthChanged.emit(Health,MaxHealth)
 
 @rpc("any_peer")
@@ -33,7 +34,7 @@ func changeTeamtoEnemy():
 func takeDamage(damage):
 	Health -= damage
 	lastDamageTime = 0.0
-	pass
+	Helpers.createSound($PlayerSound,preload("res://Sounds/hit1.wav"),self)
 	
 func isAlive():
 	return Health > 0.0
@@ -47,6 +48,7 @@ const GROUNDDECEL = 0.0001
 var CameraSens = 0.0025
 var movement1_charge = true
 var EnableCamera = false
+var PlayedSound = false
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -54,7 +56,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera := $Smoothing/Neck/Camera3D
 @onready var Aim := $Aim
 @onready var ViewModelCamera := $CanvasLayer/SubViewportContainer/SubViewport/ViewModelCamera
-
+@onready var ViewModelWeapon := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel
+@onready var ViewModel := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	
@@ -70,21 +73,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	if Input.is_action_just_pressed("debugkey2"):
 		changeTeamtoEnemy.rpc()
+	if Input.is_action_just_pressed("debugkey3"):
+		camera.set_cull_mask_value(10,not camera.get_cull_mask_value(10))
 
 func _enter_tree():
 	set_multiplayer_authority(str(name).to_int())
 
 func _ready():
+	Health = MaxHealth
+	ViewModel.set_surface_override_material(0,StandardMaterial3D.new())
 	if not is_multiplayer_authority():
 		$CanvasLayer/SubViewportContainer.hide()
-		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel.set_layer_mask_value(1,true)
-		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel.set_layer_mask_value(2,false)
-		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube.set_layer_mask_value(1,true)
-		$Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube.set_layer_mask_value(2,false)
-		Health = 100
-		return 
+		ViewModelWeapon.set_layer_mask_value(1,true)
+		ViewModelWeapon.set_layer_mask_value(2,false)
+		ViewModel.set_layer_mask_value(1,true)
+		ViewModel.set_layer_mask_value(2,false)
+		return
 	$WeaponController.set_multiplayer_authority(str(name).to_int())
-	Health = MaxHealth
 	var MainEnv = camera.get_environment()
 	ViewModelCamera.set_environment(MainEnv)
 	camera.current = true
@@ -94,26 +99,33 @@ func _afterlerp():
 	Aim.global_transform = camera.global_transform
 
 func _process(delta):
-	if not is_multiplayer_authority(): 
-		Health = 100
-		return
 	lastDamageTime += delta
+	if lastDamageTime < 0.25:
+		ViewModel.get_active_material(0).albedo_color = Color(1,0,0,1)
+	else:
+		ViewModel.get_active_material(0).albedo_color = Color(0.78,0.78,0.78,1)
+	if not is_multiplayer_authority():return
 	if lastDamageTime > 3.0 and Health < MaxHealth:
 		Health+=(MaxHealth*0.1)*delta
 
+
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
+	
+
+	if not isAlive():
+		position = Vector3.ZERO
+		Health = MaxHealth
+	
+	if position.y < -25:
+		position.y += 50
+		velocity.y = 0
 	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		movement1_charge = true
 
-	# Handle Jump.
-
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (neck.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
@@ -131,6 +143,8 @@ func _physics_process(delta):
 	if is_on_floor():
 		wishdir.x *= GROUNDDECEL**delta
 		wishdir.z *= GROUNDDECEL**delta
+		if direction == Vector3.ZERO and absf(wishdir.x+wishdir.z) < 0.2:
+			wishdir *= Vector3(0,1,0)
 	else:
 		wishdir.x *= AIRDECEL**delta
 		wishdir.z *= AIRDECEL**delta
