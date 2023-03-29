@@ -1,5 +1,4 @@
-
-[gd_scene load_steps=18 format=3 uid="uid://6mvxedfxd81g"]
+[gd_scene load_steps=18 format=3 uid="uid://jp58cw1wqllv"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_g0n7h"]
 [ext_resource type="Material" path="res://Materials/grass.tres" id="1_hynry"]
@@ -171,9 +170,13 @@ text = "Join"
 
 [node name="AddressEntry" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "localhost"
 placeholder_text = "Enter Address to Join Here"
 alignment = 1
+
+[node name="UPnP" type="CheckButton" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "UPnP (automatic portforward)"
 
 [node name="HUD" type="CanvasLayer" parent="."]
 visible = false

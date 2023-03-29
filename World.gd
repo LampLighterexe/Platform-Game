@@ -1,72 +1,84 @@
 extends Node
 #@onready var player = $Player
 
+var MemCleanTimer = 0
 
 @onready var main_menu = $CanvasLayer/MainMenu
 @onready var address_entry = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/AddressEntry
 @onready var hud = $HUD
 @onready var health_bar = $HUD/SubViewportContainer/SubViewport/HealthBarBackground
-
 @onready var muliplayerspawner = $MultiplayerSpawner
+@onready var upnp = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/UPnP
 
 func _ready():
-	muliplayerspawner.spawn_function = test
+	muliplayerspawner.spawn_function = spawnEnemy
 
-func test(e):
+func spawnEnemy(e):
 	var obj = Enemy.instantiate()
-	obj.name = "_"+str(get_tree().get_nodes_in_group("enemies").size())
+	obj.name = e["id"]+"_"+str(get_tree().get_nodes_in_group("enemies").size())
 	EntityManager.addEntity(obj)
 	return obj
 
 const Player = preload("res://player.tscn")
 const Enemy = preload("res://Enemy.tscn")
-const PORT = 32030
+var PORT = 32030
+var mode = "UPnP"
 var enet_peer = ENetMultiplayerPeer.new()
+
+var Server = null
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("debugkey1"):
-		#var newobj = Enemy.instantiate()
-		#newobj.position = Vector3(0,2,0)
-		muliplayerspawner.spawn(Enemy)
+		#if this somehow creates a use after free i'm going to just quit
+		muliplayerspawner.spawn({"id":str(randi_range(-65535,65534)),"type":"spider"})
 		
-		#add_child(newobj)
 
 func _physics_process(delta):
 	#if player.global_transform.origin.y < -25:
 	#	player.global_transform.origin.y += 50
 	#	player.velocity.y = 0
 	
-	#if is_multiplayer_authority():
-	var enemytarget = get_tree().get_nodes_in_group("player")
-	#print(enemytarget)
-	if enemytarget.size() > 0:
-		get_tree().call_group("enemies","update_target_location", enemytarget[0].global_transform.origin)
+	MemCleanTimer += delta
+	if MemCleanTimer > 10:
+		EntityManager.cleanRefs()
+		MemCleanTimer = 0
+	if is_multiplayer_authority():
+		var enemytarget = get_tree().get_nodes_in_group("player")
+		get_tree().call_group("enemies","update_target_list",enemytarget)
 
 #Work in progress connecting moster death to gain points
 #I got it -Matthew
 #func _enemyDeath():
 #	enemy.isALive.connect()
 
-	
+
 func _on_host_button_pressed():
 	main_menu.hide()
 	hud.show()
 	
+	var address = address_entry.text.split(":")
+	if address.size() > 1:
+		PORT = int(address[-1])
+
 	enet_peer.create_server(PORT)
 	multiplayer.multiplayer_peer = enet_peer
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(remove_player)
 	
 	add_player(multiplayer.get_unique_id())
-	
-	if not address_entry.text == "localhost":
+
+	if upnp.button_pressed:
 		upnp_setup()
 
 func _on_join_button_pressed():
 	main_menu.hide()
 	hud.show()
 	
-	enet_peer.create_client(address_entry.text, PORT)
+	var address = address_entry.text.split(":")
+	if address.size() > 1:
+		PORT = int(address[-1])
+	print(address[0],":", PORT)
+	enet_peer.create_client(address[0], PORT)
 	multiplayer.multiplayer_peer = enet_peer
 	
 func add_player(peer_id):

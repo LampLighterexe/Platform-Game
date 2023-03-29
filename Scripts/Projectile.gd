@@ -8,6 +8,7 @@ var Owner = null
 var ProjLifetime = 0
 var velocity = null
 var EnemyList = []
+var HitEnemyDict = {}
 var QueuedDeath = false
 var Authority = 0
 var Team = "none"
@@ -86,11 +87,12 @@ func AttackEnemies(l):
 	for i in l:
 		if i[0].has_method("takeDamage"):
 			#print(i[0],i[0].isAlive())
-			if PierceCount > 0 and i[0].isAlive():
+			if PierceCount > 0 and i[0].isAlive() and not i[0].name in HitEnemyDict:
 				#print(get_multiplayer_authority()," ",Authority," ",is_multiplayer_authority())
 				if is_multiplayer_authority():
 					Helpers.dealDamage(i[0].name,Damage) #,i[0].takeDamage.rpc(Damage)
 				PierceCount -= 1
+				HitEnemyDict[i[0].name] = ProjLifetime
 				if HitSound:
 					Helpers.createSound($RigidBody3D/Audio,HitSound)
 			if DieOnHit and PierceCount < 1:
@@ -108,7 +110,7 @@ func _physics_process(delta):
 		$RigidBody3D/Smoothing/model.look_at(self.position+RigidBody.get_linear_velocity())
 	ProjLifetime += delta
 	if ProjLifetime > ProjMaxLifetime:
-			Die()
+		Die()
 
 func Die():
 	if not QueuedDeath:

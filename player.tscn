@@ -141,12 +141,24 @@ fov = 90.0
 [node name="view_arms" parent="Smoothing/Neck/Camera3D" instance=ExtResource("4_0kumh")]
 transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -0.6, 0)
 
+[node name="Skeleton3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature" index="0"]
+bones/1/rotation = Quaternion(-0.256904, 0.0998075, -0.278964, 0.919901)
+bones/2/rotation = Quaternion(0.763588, 0.34111, 0.245099, 0.490412)
+bones/3/rotation = Quaternion(-0.0142909, 0.0539062, 0.226106, 0.972505)
+bones/4/rotation = Quaternion(0.0869302, -0.124779, 0.112991, 0.981889)
+bones/5/position = Vector3(-0.288248, 0.35, 0.0177345)
+bones/5/rotation = Quaternion(0.705772, -1.29075e-07, -0.043423, 0.707107)
+bones/6/rotation = Quaternion(0.0424748, -0.0770578, 0.480859, 0.872372)
+bones/7/rotation = Quaternion(-0.0846202, 2.76493e-08, -0.475257, 0.875769)
+bones/8/rotation = Quaternion(3.85465e-09, 1.86265e-08, 2.16491e-08, 1)
+bones/9/rotation = Quaternion(-1.16093e-08, 4.84288e-08, -6.52019e-08, 1)
+
 [node name="Cube" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="0"]
 layers = 2
 material_override = SubResource("StandardMaterial3D_gepx3")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.85514, -0.0438352, -0.516541, -0.0722718, -0.996769, -0.0350581, -0.513335, 0.0673107, -0.855545, 0.0597777, 1.65543, 2.14416)
+transform = Transform3D(0.976775, 0.131744, 0.168983, 0.0839381, -0.96088, 0.263942, 0.197145, -0.243628, -0.949621, 0.603251, 0.580617, 1.53882)
 bone_name = "rightarmweapon"
 bone_idx = 5
 

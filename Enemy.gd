@@ -24,10 +24,23 @@ func _physics_process(delta):
 		nav_agent.set_velocity(new_velocity)
 	
 
-	
+func sort_ascending(a, b):
+	if a[1] < b[1]:
+		return true
+	return false
+
+
 func update_target_location(target_location):
 	nav_agent.set_target_position(target_location)
 
+func update_target_list(targets):
+	
+	var list = []
+	for i in targets:
+		list.append([i,i.global_position.distance_to(global_position)])
+		
+	list.sort_custom(sort_ascending)
+	update_target_location(list[0][0].global_transform.origin)
 
 func _on_navigation_agent_3d_target_reached():
 	$AnimationPlayer.play("attack")

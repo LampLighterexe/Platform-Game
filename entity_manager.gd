@@ -15,5 +15,10 @@ func isEntityVaild(e):
 func isEntityNameVaild(e):
 	if "_"+e in EntityDict:
 		return true
-
+func cleanRefs():
+	var newDict = {}
+	for key in EntityDict:
+		if not EntityDict[key] == null:
+			newDict[key] = EntityDict[key]
+	EntityDict = newDict
 

@@ -44,7 +44,12 @@ func FireCurrentWeapon():
 	CurrentWeapon.RemoveClip(1)
 	
 	if not is_multiplayer_authority(): return
-	networkCreateProjectile.rpc(get_multiplayer_authority())
+	networkCreateProjectile.rpc(
+		Aim.global_transform,
+		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
+		CurrentWeapon.Projectile,
+		get_multiplayer_authority()
+	)
 	
 #	Helpers.createProjectile(
 #		Aim.global_transform,
@@ -126,11 +131,11 @@ func networkCurrentState(state):
 	
 	
 @rpc("call_local")
-func networkCreateProjectile(auth):
+func networkCreateProjectile(pos,velocity,projconfig,auth):
 	Helpers.createProjectile(
-		Aim.global_transform,
-		(Player.velocity*0.5)+Aim.get_global_transform().basis.z*-CurrentWeapon.ProjXSpeed+Vector3(0,CurrentWeapon.ProjYSpeed,0),
-		CurrentWeapon.Projectile,
+		pos,
+		velocity,
+		projconfig,
 		Aim,
 		Player.Team,
 		auth
