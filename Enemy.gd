@@ -54,7 +54,7 @@ func attack():
 	Helpers.createProjectile(
 		global_transform,
 		Vector3(0,0,0),
-		"explosion",
+		"mobattack",
 		Aim,
 		self.Team,
 		get_multiplayer_authority()

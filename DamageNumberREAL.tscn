@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3 uid="uid://vqt1pnyjd3go"]
+
+[ext_resource type="Script" path="res://PlayDamageNumber.gd" id="1_wgnbv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_klqgk"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+fixed_size = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uv5cv"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_klqgk")
+size = Vector2(0.25, 0.25)
+orientation = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_njct1"]
+font_size = 32
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[node name="DamageNumberREAL" type="Node3D"]
+script = ExtResource("1_wgnbv")
+
+[node name="DamageNumber" type="CPUParticles3D" parent="."]
+visible = false
+layers = 2
+emitting = false
+amount = 1
+lifetime = 2.5
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("PlaneMesh_uv5cv")
+direction = Vector3(0, 1, 0)
+spread = 25.0
+gravity = Vector3(0, -4, 0)
+initial_velocity_min = 4.5
+initial_velocity_max = 4.5
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(128, 128)
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="SubViewport/Control"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -24.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1"
+label_settings = SubResource("LabelSettings_njct1")

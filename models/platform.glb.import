@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://ba57oevvnqxt3"
-path="res://.godot/imported/platform.fbx-111d05e86e3a0381097e4a7d2484346c.scn"
+uid="uid://bwr5o7flllimf"
+path="res://.godot/imported/platform.glb-3476c7cd272116fb58fd5d0a0eddb703.scn"
 
 [deps]
 
-source_file="res://models/platform.fbx"
-dest_files=["res://.godot/imported/platform.fbx-111d05e86e3a0381097e4a7d2484346c.scn"]
+source_file="res://models/platform.glb"
+dest_files=["res://.godot/imported/platform.glb-3476c7cd272116fb58fd5d0a0eddb703.scn"]
 
 [params]
 
@@ -29,16 +29,10 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={
-"meshes": {
-"Root Scene_Cube": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 60.0,
-"lods/normal_split_angle": 25.0,
-"save_to_file/enabled": true,
-"save_to_file/make_streamable": "",
-"save_to_file/path": "res://models/exported/platform.res"
+"materials": {
+"@MATERIAL:0": {
+"use_external/enabled": true,
+"use_external/path": "res://Materials/grass.tres"
 }
 }
 }

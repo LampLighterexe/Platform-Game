@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bwp4ou4icfbg4"]
+
+[ext_resource type="Material" uid="uid://yqqxgt12cmf2" path="res://DamageNumber.tres" id="1_s6dy3"]
+
+[sub_resource type="FontVariation" id="FontVariation_pngw8"]
+
+[sub_resource type="TextMesh" id="TextMesh_5yumv"]
+resource_local_to_scene = true
+material = ExtResource("1_s6dy3")
+text = "1"
+font = SubResource("FontVariation_pngw8")
+pixel_size = 0.005
+depth = 0.0
+
+[node name="DamageNumber" type="CPUParticles3D"]
+layers = 2
+amount = 1
+lifetime = 2.5
+explosiveness = 1.0
+mesh = SubResource("TextMesh_5yumv")
+direction = Vector3(0, 1, 0)
+spread = 25.0
+gravity = Vector3(0, -4, 0)
+initial_velocity_min = 4.5
+initial_velocity_max = 4.5

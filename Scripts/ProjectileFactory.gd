@@ -16,7 +16,7 @@ func _init():
 		"HitSound":preload("res://Sounds/cat.mp3")
 	}))
 	register("freeze_ray",ProjectileConfig.new({
-		"Damage":1,
+		"Damage":3,
 		"Model":"res://models/exported/ice_ball.res",
 		"Gravity":0,
 		"AttachOffset":Vector3(-0.3,0,0.5),
@@ -59,14 +59,26 @@ func _init():
 		"Size":1
 	}))
 	register("explosion",ProjectileConfig.new({
-		"Damage":15,
+		"Damage":5,
 		"Model":null,
 		"Gravity":0,
 		"AttachToOwner":false,
 		"DieOnTerrain":false,
 		"PhysicsEnabled":false,
 		"AttachOffset":Vector3(0,0,0),
-		"Size":3,
+		"Size":2,
+		"PierceCount":10,
+		"ProjMaxLifetime":0.033
+	}))
+	register("mobattack",ProjectileConfig.new({
+		"Damage":20,
+		"Model":null,
+		"Gravity":0,
+		"AttachToOwner":false,
+		"DieOnTerrain":false,
+		"PhysicsEnabled":false,
+		"AttachOffset":Vector3(0,0,0),
+		"Size":4,
 		"PierceCount":9999,
 		"ProjMaxLifetime":0.033
 	}))

@@ -20,7 +20,7 @@ func _init():
 			"Model":"res://models/exported/maxwell.res",
 			"Projectile":"maxwell",
 			"Clip":6,
-			"MaxAmmo":6,
+			"MaxAmmo":12,
 			"ReloadSound":preload("res://Sounds/maxwell_reload.mp3"),
 			"ProjXSpeed":8,
 			"ProjYSpeed":2
@@ -31,6 +31,8 @@ func _init():
 			"FireAnim":"w_freeze_ray",
 			"Model":"res://models/exported/Freeze_Ray.res",
 			"Projectile":"freeze_ray",
+			"Clip":10,
+			"MaxAmmo":100,
 			"ProjXSpeed":16,
 			"ProjYSpeed":0,
 			"Automatic":true
@@ -44,7 +46,10 @@ func _init():
 			"Projectile":"sniper",
 			"ProjXSpeed":0,
 			"ProjYSpeed":0,
+			"Clip":4,
+			"MaxAmmo":20,
 			"FireSpeed":0.25,
+			"ReloadSpeed":0.5,
 			"Automatic":true
 	}))
 

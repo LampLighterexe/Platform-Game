@@ -1,10 +1,30 @@
 extends CharacterBody3D
 
 
-var Team = "player"
+
 signal HealthChanged
+
+const AIRSPEED = 0.2
+const SPEED = 1.0
+const JUMP_VELOCITY = 6
+const AIRDECEL = 0.30
+const GROUNDDECEL = 0.0001
+
+var CameraSens = 0.0025
+var movement1_charge = true
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var MaxHealth = 100.0
 var lastDamageTime = 0.0
+var Team = "player"
+
+@onready var neck := $Smoothing/Neck
+@onready var camera := $Smoothing/Neck/Camera3D
+@onready var Aim := $Aim
+@onready var ViewModelCamera := $CanvasLayer/SubViewportContainer/SubViewport/ViewModelCamera
+@onready var ViewModelWeapon := $Smoothing/BoneAttachment3D/WeaponModel
+@onready var ViewModel := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube
+
+
 var Health: float:
 	get:
 		return Health
@@ -38,26 +58,7 @@ func takeDamage(damage):
 	
 func isAlive():
 	return Health > 0.0
-
-const AIRSPEED = 0.2
-const SPEED = 1.0
-const JUMP_VELOCITY = 6
-const AIRDECEL = 0.30
-const GROUNDDECEL = 0.0001
-
-var CameraSens = 0.0025
-var movement1_charge = true
-var EnableCamera = false
-var PlayedSound = false
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-
-@onready var neck := $Smoothing/Neck
-@onready var camera := $Smoothing/Neck/Camera3D
-@onready var Aim := $Aim
-@onready var ViewModelCamera := $CanvasLayer/SubViewportContainer/SubViewport/ViewModelCamera
-@onready var ViewModelWeapon := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel
-@onready var ViewModel := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube
+	
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	
@@ -90,6 +91,7 @@ func _ready():
 		ViewModel.set_layer_mask_value(2,false)
 		return
 	$WeaponController.set_multiplayer_authority(str(name).to_int())
+	#$Smoothing/Neck/player_rig/Armature/Skeleton3D.set_bone_pose_scale()
 	var MainEnv = camera.get_environment()
 	ViewModelCamera.set_environment(MainEnv)
 	camera.current = true
@@ -143,7 +145,7 @@ func _physics_process(delta):
 	if is_on_floor():
 		wishdir.x *= GROUNDDECEL**delta
 		wishdir.z *= GROUNDDECEL**delta
-		if direction == Vector3.ZERO and absf(wishdir.x+wishdir.z) < 0.2:
+		if direction == Vector3.ZERO and absf(wishdir.x)+absf(wishdir.z) < 0.5:
 			wishdir *= Vector3(0,1,0)
 	else:
 		wishdir.x *= AIRDECEL**delta

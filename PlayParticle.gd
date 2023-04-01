@@ -7,6 +7,6 @@ func _ready():
 
 func _physics_process(delta):
 	timer += delta
-	if timer > lifetime:
+	if timer >= lifetime*0.95:
 		queue_free()
 

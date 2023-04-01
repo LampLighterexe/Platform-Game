@@ -74,15 +74,17 @@ func initialize(pos,vel,projconfig,body,team, auth):
 	velocity = vel
 	Team = team
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func sort_ascending(a, b):
 	if a[1] < b[1]:
 		return true
 	return false
 
+func DamageNumber(e,d):
+	var Number = preload("res://DamageNumberREAL.tscn").instantiate()
+	Number.text = str(d)
+	$"..".add_child(Number)
+	Number.global_position = e.global_position+((global_position-e.global_position)*Vector3(0,1,0))
+	
 func AttackEnemies(l):
 	for i in l:
 		if i[0].has_method("takeDamage"):
@@ -90,7 +92,8 @@ func AttackEnemies(l):
 			if PierceCount > 0 and i[0].isAlive() and not i[0].name in HitEnemyDict:
 				#print(get_multiplayer_authority()," ",Authority," ",is_multiplayer_authority())
 				if is_multiplayer_authority():
-					Helpers.dealDamage(i[0].name,Damage) #,i[0].takeDamage.rpc(Damage)
+					Helpers.dealDamage(i[0].name,Damage)
+					DamageNumber(i[0],Damage)
 				PierceCount -= 1
 				HitEnemyDict[i[0].name] = ProjLifetime
 				if HitSound:
@@ -106,7 +109,7 @@ func _physics_process(delta):
 		EnemyList.clear()
 	if AttachToOwner and Owner:
 		transform = Owner.global_transform.translated(Owner.get_global_transform().basis*-AttachOffset)
-	if ForceDir:
+	if ForceDir and not (RigidBody.get_linear_velocity().normalized().y == 1.0 or RigidBody.get_linear_velocity().normalized().y == -1.0):
 		$RigidBody3D/Smoothing/model.look_at(self.position+RigidBody.get_linear_velocity())
 	ProjLifetime += delta
 	if ProjLifetime > ProjMaxLifetime:

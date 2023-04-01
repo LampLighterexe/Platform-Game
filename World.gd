@@ -8,7 +8,7 @@ var MemCleanTimer = 0
 @onready var hud = $HUD
 @onready var health_bar = $HUD/SubViewportContainer/SubViewport/HealthBarBackground
 @onready var muliplayerspawner = $MultiplayerSpawner
-@onready var upnp = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/UPnP
+@onready var upnp_button = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/UPnP
 
 func _ready():
 	muliplayerspawner.spawn_function = spawnEnemy
@@ -30,21 +30,25 @@ var Server = null
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("debugkey1"):
 		#if this somehow creates a use after free i'm going to just quit
+
 		muliplayerspawner.spawn({"id":str(randi_range(-65535,65534)),"type":"spider"})
-		
 
 func _physics_process(delta):
 	#if player.global_transform.origin.y < -25:
 	#	player.global_transform.origin.y += 50
 	#	player.velocity.y = 0
 	
+	
+	
+	if is_multiplayer_authority():
+		var enemytarget = get_tree().get_nodes_in_group("player")
+		get_tree().call_group("enemies","update_target_list",enemytarget)
+	
 	MemCleanTimer += delta
 	if MemCleanTimer > 10:
 		EntityManager.cleanRefs()
 		MemCleanTimer = 0
-	if is_multiplayer_authority():
-		var enemytarget = get_tree().get_nodes_in_group("player")
-		get_tree().call_group("enemies","update_target_list",enemytarget)
+
 
 #Work in progress connecting moster death to gain points
 #I got it -Matthew
@@ -67,7 +71,7 @@ func _on_host_button_pressed():
 	
 	add_player(multiplayer.get_unique_id())
 
-	if upnp.button_pressed:
+	if upnp_button.button_pressed:
 		upnp_setup()
 
 func _on_join_button_pressed():

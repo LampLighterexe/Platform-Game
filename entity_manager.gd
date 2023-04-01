@@ -8,12 +8,13 @@ func addEntity(e):
 func getEntity(e):
 	if isEntityVaild(e): return EntityDict[e]
 	if isEntityNameVaild(e): return EntityDict["_"+e]
+	push_error(e," was not found in entity manager!")
 		
 func isEntityVaild(e):
-	if e in EntityDict:
+	if e in EntityDict and not EntityDict[e] == null:
 		return true
 func isEntityNameVaild(e):
-	if "_"+e in EntityDict:
+	if "_"+e in EntityDict and not EntityDict["_"+e] == null:
 		return true
 func cleanRefs():
 	var newDict = {}
