@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b1n5obov10y6h"]
+
+[resource]
+resource_name = "Headphones"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+metallic = 0.75
+roughness = 0.7
+emission_enabled = true
+emission = Color(0.34919, 0.34919, 0.34919, 1)

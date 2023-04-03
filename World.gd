@@ -2,6 +2,7 @@ extends Node
 #@onready var player = $Player
 
 var MemCleanTimer = 0
+var RequiresReset = false
 
 @onready var main_menu = $CanvasLayer/MainMenu
 @onready var address_entry = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/AddressEntry
@@ -9,9 +10,12 @@ var MemCleanTimer = 0
 @onready var health_bar = $HUD/SubViewportContainer/SubViewport/HealthBarBackground
 @onready var muliplayerspawner = $MultiplayerSpawner
 @onready var upnp_button = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/UPnP
+@onready var CharacterSelect = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/OptionButton
 
 func _ready():
 	muliplayerspawner.spawn_function = spawnEnemy
+	for i in Registry.PlayerFact.PlayerDict:
+		CharacterSelect.add_item(i,CharacterSelect.item_count)
 
 func spawnEnemy(e):
 	var obj = Enemy.instantiate()
@@ -34,12 +38,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		muliplayerspawner.spawn({"id":str(randi_range(-65535,65534)),"type":"spider"})
 
 func _physics_process(delta):
-	#if player.global_transform.origin.y < -25:
-	#	player.global_transform.origin.y += 50
-	#	player.velocity.y = 0
-	
-	
-	
 	if is_multiplayer_authority():
 		var enemytarget = get_tree().get_nodes_in_group("player")
 		get_tree().call_group("enemies","update_target_list",enemytarget)
@@ -88,12 +86,14 @@ func _on_join_button_pressed():
 func add_player(peer_id):
 	var player = Player.instantiate()
 	player.name = str(peer_id)
-	add_child(player)
 	
+	#player.character = CharacterSelect.get_item_text(CharacterSelect.get_selected_id())
+	add_child(player)
 	EntityManager.addEntity(player)
 	
 	if player.is_multiplayer_authority():
 		player.HealthChanged.connect(update_health_bar)
+	RequiresReset = true
 
 
 func update_health_bar(h,mh):
@@ -105,6 +105,7 @@ func remove_player(peer_id):
 		player.queue_free()
 
 func _on_multiplayer_spawner_spawned(node):
+	RequiresReset = true
 	if node.is_multiplayer_authority():
 		node.HealthChanged.connect(update_health_bar)
 

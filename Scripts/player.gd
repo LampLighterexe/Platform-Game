@@ -1,28 +1,29 @@
-extends CharacterBody3D
+#extends CharacterBody3D
+extends PlayerConfig
 
 
 
 signal HealthChanged
 
-const AIRSPEED = 0.2
-const SPEED = 1.0
-const JUMP_VELOCITY = 6
-const AIRDECEL = 0.30
-const GROUNDDECEL = 0.0001
 
+var Team = "player"
 var CameraSens = 0.0025
 var movement1_charge = true
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var MaxHealth = 100.0
-var lastDamageTime = 0.0
-var Team = "player"
+var lastDamageTime = 5.0
+
+var lastcharacter = null
+var character = null
+var PlayerSkeleton = null
 
 @onready var neck := $Smoothing/Neck
 @onready var camera := $Smoothing/Neck/Camera3D
+@onready var PlayerModelContainer := $Smoothing/Neck/PlayerModel
 @onready var Aim := $Aim
 @onready var ViewModelCamera := $CanvasLayer/SubViewportContainer/SubViewport/ViewModelCamera
-@onready var ViewModelWeapon := $Smoothing/BoneAttachment3D/WeaponModel
+#@onready var ViewModelWeapon := $Smoothing/BoneAttachment3D/WeaponModel
+@onready var ViewModelWeapon := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel
 @onready var ViewModel := $Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/Cube
+#@onready var PlayerSkeleton := $Smoothing/Neck/player_rig/Armature/Skeleton3D
 
 
 var Health: float:
@@ -74,34 +75,68 @@ func _unhandled_input(event: InputEvent) -> void:
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	if Input.is_action_just_pressed("debugkey2"):
 		changeTeamtoEnemy.rpc()
+		#setChar.rpc("soundbyte")
 	if Input.is_action_just_pressed("debugkey3"):
 		camera.set_cull_mask_value(10,not camera.get_cull_mask_value(10))
 
 func _enter_tree():
 	set_multiplayer_authority(str(name).to_int())
 
-func _ready():
+@rpc("call_local")
+func setChar(c):
+	if not lastcharacter == c:
+		character = c
+
+func setCharacterDefaults(c):
+	Registry.PlayerFact.setPlayer(self,c)
+	lastcharacter = c
+	for i in PlayerModelContainer.get_children():
+		PlayerModelContainer.remove_child(i)
+		i.queue_free()
+	if PlayerModel:
+		PlayerModel = PlayerModel.instantiate()
+	PlayerModelContainer.add_child(PlayerModel)
+	PlayerSkeleton = PlayerModel.get_node("%GeneralSkeleton")
+	scale = Vector3.ONE * Size
+	if ViewHeight:
+		neck.position.y = ViewHeight
+		PlayerModelContainer.position.y = -ViewHeight
+	if is_multiplayer_authority():
+		if PlayerSkeleton:
+			PlayerSkeleton.set_bone_pose_scale(PlayerSkeleton.find_bone("Head"),Vector3(0.0,0.0,0.0))
+		PlayerModelContainer.position.z = 0.2
 	Health = MaxHealth
+	pass
+
+func _ready():
+	#setCharacterDefaults(character)
 	ViewModel.set_surface_override_material(0,StandardMaterial3D.new())
 	if not is_multiplayer_authority():
 		$CanvasLayer/SubViewportContainer.hide()
-		ViewModelWeapon.set_layer_mask_value(1,true)
 		ViewModelWeapon.set_layer_mask_value(2,false)
-		ViewModel.set_layer_mask_value(1,true)
 		ViewModel.set_layer_mask_value(2,false)
 		return
+	setChar.rpc(get_node("/root/World").CharacterSelect.get_item_text(get_node("/root/World").CharacterSelect.get_selected_id()))
 	$WeaponController.set_multiplayer_authority(str(name).to_int())
-	#$Smoothing/Neck/player_rig/Armature/Skeleton3D.set_bone_pose_scale()
-	var MainEnv = camera.get_environment()
-	ViewModelCamera.set_environment(MainEnv)
+	ViewModelCamera.set_environment(camera.get_environment())
 	camera.current = true
-	
+
 func _afterlerp():
 	ViewModelCamera.global_transform = camera.global_transform
 	Aim.global_transform = camera.global_transform
 
 func _process(delta):
 	lastDamageTime += delta
+	#gross hack, remake when lobby system is added
+	if get_node("/root/World").RequiresReset:
+		setChar.rpc(character)
+		get_node("/root/World").RequiresReset = false
+	if not character == lastcharacter:
+		setCharacterDefaults(character)
+	
+	if PlayerSkeleton:
+		#remove when adding third person animations
+		PlayerSkeleton.set_bone_pose_rotation(PlayerSkeleton.find_bone("Head"),camera.basis.get_rotation_quaternion())
 	if lastDamageTime < 0.25:
 		ViewModel.get_active_material(0).albedo_color = Color(1,0,0,1)
 	else:
@@ -131,30 +166,30 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (neck.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	var wishdir = velocity+(direction*((SPEED*60 if is_on_floor() else AIRSPEED*60)*delta))
+	var wishdir = velocity+(direction*((speed*60 if is_on_floor() else airSpeed*60)*delta))
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+		velocity.y = jumpVelocity
 	
 	if Input.is_action_just_pressed("movement1") and movement1_charge:
-		velocity.y = JUMP_VELOCITY*0.5
+		velocity.y = jumpVelocity*0.5
 		if direction.x == 0 and direction.y == 0:
 			direction = (neck.transform.basis * Vector3(0, 0, -1)).normalized()
-		wishdir += (direction*(SPEED*10))
+		wishdir += (direction*(speed*10))
 		movement1_charge = false
 	
 	if is_on_floor():
-		wishdir.x *= GROUNDDECEL**delta
-		wishdir.z *= GROUNDDECEL**delta
+		wishdir.x *= groundDecel**delta
+		wishdir.z *= groundDecel**delta
 		if direction == Vector3.ZERO and absf(wishdir.x)+absf(wishdir.z) < 0.5:
 			wishdir *= Vector3(0,1,0)
 	else:
-		wishdir.x *= AIRDECEL**delta
-		wishdir.z *= AIRDECEL**delta
+		wishdir.x *= airDecel**delta
+		wishdir.z *= airDecel**delta
 		
 	velocity.x = wishdir.x
 	velocity.z = wishdir.z
 	var was_on_floor = is_on_floor()
 	move_and_slide()
 	if Input.is_action_just_pressed("jump") and is_on_wall() and not was_on_floor:
-		velocity += (get_wall_normal()*(SPEED*8))
-		velocity.y = JUMP_VELOCITY*0.9
+		velocity += (get_wall_normal()*(speed*8))
+		velocity.y = jumpVelocity*0.9

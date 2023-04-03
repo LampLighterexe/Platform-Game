@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6kvqfsoddmjt"]
+
+[ext_resource type="PackedScene" uid="uid://d0p6wjcdpuam0" path="res://models/soundbyte.blend" id="1_uv8rp"]
+
+[node name="soundbyte" instance=ExtResource("1_uv8rp")]
+
+[node name="Body" parent="Armature/GeneralSkeleton" index="0"]
+blend_shapes/Symbols_on = 1.0
+
+[node name="headphones" parent="Armature/GeneralSkeleton" index="1"]
+visible = false

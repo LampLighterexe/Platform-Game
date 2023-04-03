@@ -23,9 +23,6 @@ func _init(dict={}):
 	for entry in dict:
 		self[entry] = dict[entry]
 	ClipMax = Clip
-	if "Model" in dict and dict["Model"]:
-		self.Model = load(dict["Model"])
-
 
 func RefillClip():
 	if not self.MaxAmmo == -1:

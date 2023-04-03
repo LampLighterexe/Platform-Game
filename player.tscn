@@ -1,12 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://cmolmb4vvryp0"]
+[gd_scene load_steps=12 format=3 uid="uid://cmolmb4vvryp0"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_hxdw1"]
 [ext_resource type="Script" path="res://Scripts/WeaponController.gd" id="2_0stnl"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_oxmek"]
 [ext_resource type="PackedScene" uid="uid://cscogdcs4a472" path="res://models/view_arms.glb" id="4_0kumh"]
-[ext_resource type="PackedScene" uid="uid://dn7wd0eb23u2d" path="res://reefslider_avatar_uv.fbx" id="4_jh1ov"]
 [ext_resource type="ArrayMesh" uid="uid://beqpuhy7ayq7r" path="res://models/exported/Freeze_Ray.res" id="5_tsn65"]
-[ext_resource type="PackedScene" uid="uid://dhwshbtt4543s" path="res://models/player_rig.glb" id="7_byoyi"]
 
 [sub_resource type="Animation" id="Animation_xbd82"]
 resource_name = "w_freeze_ray"
@@ -122,7 +120,7 @@ size = Vector2i(1600, 900)
 render_target_update_mode = 4
 
 [node name="ViewModelCamera" type="Camera3D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58228, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.465, 0)
 cull_mask = 2
 fov = 90.0
 
@@ -154,41 +152,22 @@ bones/9/rotation = Quaternion(-1.16093e-08, 4.84288e-08, -6.52019e-08, 1)
 [node name="Cube" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="0"]
 layers = 2
 
-[node name="player_rig" parent="Smoothing/Neck" instance=ExtResource("7_byoyi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.465, 0.2)
-
-[node name="Skeleton3D" parent="Smoothing/Neck/player_rig/Armature" index="0"]
-bones/4/scale = Vector3(0.000474975, 0.000474975, 0.000474975)
-bones/9/scale = Vector3(0.000474975, 0.000474975, 0.000474975)
-bones/14/scale = Vector3(0.100475, 0.100475, 0.100475)
-
-[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing"]
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D" index="1"]
 transform = Transform3D(0.998113, 3.20375e-07, -0.061409, -0.061409, 5.21233e-07, -0.998113, -2.75671e-07, 1, 5.59026e-07, 0.711205, 2.9, 2.38698e-08)
 bone_name = "rightarmweapon"
 bone_idx = 5
 use_external_skeleton = true
-external_skeleton = NodePath("../Neck/Camera3D/view_arms/Armature/Skeleton3D")
+external_skeleton = NodePath("..")
 
-[node name="WeaponModel" type="MeshInstance3D" parent="Smoothing/BoneAttachment3D"]
+[node name="WeaponModel" type="MeshInstance3D" parent="Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D"]
 transform = Transform3D(1, 7.45058e-09, 0, 1.11759e-08, 1, -1.49012e-08, 0, 0, 1, 0, 0, 0)
 layers = 2
 mesh = ExtResource("5_tsn65")
 
-[node name="reefslider_avatar_uv" parent="Smoothing" instance=ExtResource("4_jh1ov")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-visible = false
+[node name="SoundHolder" type="Node3D" parent="Smoothing/Neck/Camera3D"]
 
-[node name="Body" parent="Smoothing/reefslider_avatar_uv/RootNode/Armature/Skeleton3D" index="0"]
-visible = false
-layers = 4
-
-[node name="Backrest__M_Gear001" parent="Smoothing/reefslider_avatar_uv/RootNode/Armature/Skeleton3D" index="1"]
-visible = false
-layers = 4
-
-[node name="AirHole1__M_Body001" parent="Smoothing/reefslider_avatar_uv/RootNode/Armature/Skeleton3D" index="2"]
-visible = false
-layers = 4
+[node name="PlayerModel" type="Node3D" parent="Smoothing/Neck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.465, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -200,5 +179,3 @@ shape = SubResource("CapsuleShape3D_02w5n")
 replication_config = SubResource("SceneReplicationConfig_xilu7")
 
 [editable path="Smoothing/Neck/Camera3D/view_arms"]
-[editable path="Smoothing/Neck/player_rig"]
-[editable path="Smoothing/reefslider_avatar_uv"]

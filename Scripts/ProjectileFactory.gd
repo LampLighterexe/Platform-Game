@@ -8,7 +8,7 @@ func _init():
 	register("default",ProjectileConfig.new({}))
 	register("maxwell",ProjectileConfig.new({
 		"Damage":15,
-		"Model":"res://models/exported/maxwell.res",
+		"Model":preload("res://models/exported/maxwell.res"),
 		"Gravity":0.5,
 		"Size":2,
 		"PierceCount":5,
@@ -17,7 +17,7 @@ func _init():
 	}))
 	register("freeze_ray",ProjectileConfig.new({
 		"Damage":3,
-		"Model":"res://models/exported/ice_ball.res",
+		"Model":preload("res://models/exported/ice_ball.res"),
 		"Gravity":0,
 		"AttachOffset":Vector3(-0.3,0,0.5),
 		"Size":0.5,

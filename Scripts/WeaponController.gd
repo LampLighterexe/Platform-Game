@@ -19,10 +19,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		setCurrentState("reload")
 
 @onready var ViewModelAnim := $"../Smoothing/Neck/Camera3D/view_arms/AnimationPlayer"
-@onready var ViewModelWeapon := $"../Smoothing/BoneAttachment3D/WeaponModel"
+#@onready var ViewModelWeapon := $"../Smoothing/BoneAttachment3D/WeaponModel"
+@onready var ViewModelWeapon := $"../Smoothing/Neck/Camera3D/view_arms/Armature/Skeleton3D/BoneAttachment3D/WeaponModel"
 @onready var WeaponFire := $"../WeaponFire"
 @onready var Aim := $"../Aim"
 @onready var Player := $".."
+@onready var SoundHolder := $"../Smoothing/Neck/Camera3D/SoundHolder"
 
 var WeaponSlot = 0
 var LastWeaponSlot = 0
@@ -40,7 +42,7 @@ func _ready():
 func FireCurrentWeapon():
 	if not CurrentState == "fire":
 		return
-	Helpers.createSound($"../PlayerSound",CurrentWeapon.FireSound,Aim)
+	Helpers.createSound($"../PlayerSound",CurrentWeapon.FireSound,SoundHolder)
 	CurrentWeapon.RemoveClip(1)
 	
 	if not is_multiplayer_authority(): return
@@ -57,9 +59,9 @@ func ResetWeaponState():
 	LastState = ""
 	ViewModelWeapon.visible = false
 	setCurrentState("equip")
-	for n in Aim.get_children():
+	for n in SoundHolder.get_children():
 		if n is AudioStreamPlayer3D:
-			Aim.remove_child(n)
+			SoundHolder.remove_child(n)
 			n.queue_free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -99,13 +101,13 @@ func _process(_delta):
 				if LastState != "reload":
 					#ViewModelAnim.stop()
 					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.1,CurrentWeapon.ReloadSpeed)
-					Helpers.createSound($"../PlayerSound",CurrentWeapon.ReloadSound,Aim)
+					Helpers.createSound($"../PlayerSound",CurrentWeapon.ReloadSound,SoundHolder)
 				if not ViewModelAnim.is_playing():
 					CurrentWeapon.RefillClip()
 					setCurrentState("idle")
 			"equip":
 				if LastState != "equip":
-					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.1,CurrentWeapon.EquipSpeed)
+					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.0,CurrentWeapon.EquipSpeed)
 				else:
 					if Weapons[WeaponSlot].Model:
 						ViewModelWeapon.mesh = Weapons[WeaponSlot].Model

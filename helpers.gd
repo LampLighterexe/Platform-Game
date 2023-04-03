@@ -1,7 +1,9 @@
 extends Node
 
+var ProjectileObject = preload("res://Projectile.tscn")
+
 func createProjectile(pos,velocity,projconfig,origin,team,auth):
-	var newproj = preload("res://Projectile.tscn").instantiate()
+	var newproj = ProjectileObject.instantiate()
 	newproj.initialize(
 		pos,
 		velocity,
@@ -12,11 +14,15 @@ func createProjectile(pos,velocity,projconfig,origin,team,auth):
 	)
 	add_child(newproj)
 
-func createParticles(p,):
+func createParticles(p,obj=null):
 	var particles = p.duplicate()
 	particles.set_script(preload("res://PlayParticle.gd"))
-	particles.global_transform = p.global_transform
-	add_child(particles)
+	if obj:
+		particles.transform = Transform3D()
+		obj.add_child(particles)
+	else:
+		particles.global_transform = p.global_transform
+		add_child(particles)
 	
 func createSound(s,s2,obj=null):
 	var sound = s.duplicate()

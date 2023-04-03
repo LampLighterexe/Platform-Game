@@ -25,5 +25,5 @@ func _init(dict={}):
 	for entry in dict:
 		self[entry] = dict[entry]
 	SetVars = dict
-	if "Model" in dict and dict["Model"]:
-		self.Model = load(dict["Model"])
+	#if "Model" in dict and dict["Model"]:
+	#	self.Model = load(dict["Model"])
