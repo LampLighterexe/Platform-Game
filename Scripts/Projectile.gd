@@ -12,6 +12,7 @@ var HitEnemyDict = {}
 var QueuedDeath = false
 var Authority = 0
 var Team = "none"
+var DisplayDamage = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	RigidBody.set_linear_velocity(velocity)
@@ -58,10 +59,11 @@ func _afterlerp():
 	pass
 
 
-func initialize(pos,vel,projconfig,body,team, auth):
+func initialize(pos,vel,projconfig,body,team,auth,showdmg):
 	for entry in projconfig.SetVars:
 		self[entry] = projconfig[entry]
 	Authority = auth
+	DisplayDamage = showdmg
 	set_multiplayer_authority(Authority)
 	$RigidBody3D/Smoothing/model.mesh = Model
 
@@ -80,7 +82,7 @@ func sort_ascending(a, b):
 	return false
 
 func DamageNumber(e,d):
-	var Number = preload("res://DamageNumberREAL.tscn").instantiate()
+	var Number = preload("res://Scenes/DamageNumberREAL.tscn").instantiate()
 	Number.text = str(d)
 	$"..".add_child(Number)
 	Number.global_position = e.global_position+((global_position-e.global_position)*Vector3(0,1,0))
@@ -93,7 +95,13 @@ func AttackEnemies(l):
 				#print(get_multiplayer_authority()," ",Authority," ",is_multiplayer_authority())
 				if is_multiplayer_authority():
 					Helpers.dealDamage(i[0].name,Damage)
-					DamageNumber(i[0],Damage)
+					if Knockback:
+						var kbpos = global_position
+						if AttachToOwner and Owner:
+							kbpos = Owner.global_position
+						Helpers.dealKnockback(i[0].name,Knockback,kbpos)
+					if DisplayDamage:
+						DamageNumber(i[0],Damage)
 				PierceCount -= 1
 				HitEnemyDict[i[0].name] = ProjLifetime
 				if HitSound:
@@ -124,7 +132,8 @@ func Die():
 				DeathProjectile,
 				null,
 				Team,
-				Authority
+				Authority,
+				DisplayDamage
 			)
 		if DeathSound:
 			Helpers.createSound($RigidBody3D/Audio,DeathSound)

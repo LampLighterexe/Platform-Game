@@ -12,6 +12,7 @@ func _init():
 			"Model":null,
 			"FireSpeed":1.0,
 			"Projectile":"fist",
+			"HideArms":"right"
 	}))
 	register("dingus",Weapon.new({
 			"Name":"dingus",
@@ -23,7 +24,8 @@ func _init():
 			"MaxAmmo":12,
 			"ReloadSound":preload("res://Sounds/maxwell_reload.mp3"),
 			"ProjXSpeed":8,
-			"ProjYSpeed":2
+			"ProjYSpeed":2,
+			"HideArms":"both"
 	}))
 	register("Freeze Ray",Weapon.new({
 			"Name":"Freeze Ray",
@@ -35,7 +37,8 @@ func _init():
 			"MaxAmmo":100,
 			"ProjXSpeed":16,
 			"ProjYSpeed":0,
-			"Automatic":true
+			"Automatic":true,
+			"HideArms":"both"
 	}))
 		
 	register("debug",Weapon.new({
@@ -50,7 +53,8 @@ func _init():
 			"MaxAmmo":20,
 			"FireSpeed":0.25,
 			"ReloadSpeed":0.5,
-			"Automatic":true
+			"Automatic":true,
+			"HideArms":"both"
 	}))
 
 func register(wepname, weapon):

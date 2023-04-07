@@ -1,0 +1,177 @@
+[gd_scene load_steps=35 format=3 uid="uid://heo65pfqhvdy"]
+
+[ext_resource type="Script" path="res://Scripts/master_animator.gd" id="1_e2wur"]
+[ext_resource type="AnimationLibrary" uid="uid://di6jhpmwmpne3" path="res://Animations/PlayerLibrary.res" id="2_7ejk5"]
+[ext_resource type="ArrayMesh" uid="uid://beqpuhy7ayq7r" path="res://models/exported/Freeze_Ray.res" id="3_rw131"]
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8xlnh"]
+
+[sub_resource type="AnimationNodeTimeSeek" id="AnimationNodeTimeSeek_gqtb4"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6f4qp"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/w_placeholder_equip"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qajks"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/w_placeholder_fire"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nnja1"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/w_placeholder_idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_d88vg"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/w_placeholder_reload"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hr3i6"]
+resource_local_to_scene = true
+reset = false
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0yupc"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y48l0"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cypis"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vkm82"]
+resource_local_to_scene = true
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8bmm3"]
+resource_local_to_scene = true
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_baqdw"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dr7rj"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6xfyq"]
+resource_local_to_scene = true
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_qupxg"]
+states/End/position = Vector2(1028, 100)
+states/equip/node = SubResource("AnimationNodeAnimation_6f4qp")
+states/equip/position = Vector2(302, 184)
+states/fire/node = SubResource("AnimationNodeAnimation_qajks")
+states/fire/position = Vector2(821, 29)
+states/idle/node = SubResource("AnimationNodeAnimation_nnja1")
+states/idle/position = Vector2(594, 100)
+states/reload/node = SubResource("AnimationNodeAnimation_d88vg")
+states/reload/position = Vector2(821, 176)
+transitions = ["equip", "idle", SubResource("AnimationNodeStateMachineTransition_hr3i6"), "Start", "equip", SubResource("AnimationNodeStateMachineTransition_0yupc"), "idle", "reload", SubResource("AnimationNodeStateMachineTransition_y48l0"), "idle", "fire", SubResource("AnimationNodeStateMachineTransition_cypis"), "fire", "idle", SubResource("AnimationNodeStateMachineTransition_vkm82"), "reload", "idle", SubResource("AnimationNodeStateMachineTransition_8bmm3"), "fire", "End", SubResource("AnimationNodeStateMachineTransition_baqdw"), "idle", "End", SubResource("AnimationNodeStateMachineTransition_dr7rj"), "reload", "End", SubResource("AnimationNodeStateMachineTransition_6xfyq")]
+graph_offset = Vector2(4, -29)
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_du524"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/w_placeholder_idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o0oej"]
+resource_local_to_scene = true
+animation = &"PlayerLibrary/RESET"
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_q6an3"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_4uor1"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_fndld"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_2i2l3"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ruubd"]
+animation = &"PlayerLibrary/armlook_down"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_coq3h"]
+animation = &"PlayerLibrary/armlook_up"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_doh4o"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_32q4f"]
+animation = &"PlayerLibrary/look_down"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cbk7k"]
+animation = &"PlayerLibrary/look_up"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w8rmp"]
+animation = &"PlayerLibrary/walk"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_2ywuk"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_472cj"]
+resource_local_to_scene = true
+graph_offset = Vector2(-823.301, -17.237)
+nodes/OneShot/node = SubResource("AnimationNodeOneShot_8xlnh")
+nodes/OneShot/position = Vector2(-420, -20)
+nodes/RestartWalk/node = SubResource("AnimationNodeTimeSeek_gqtb4")
+nodes/RestartWalk/position = Vector2(-500, 280)
+nodes/Weapon/node = SubResource("AnimationNodeStateMachine_qupxg")
+nodes/Weapon/position = Vector2(-940, -200)
+nodes/WeaponAnim/node = SubResource("AnimationNodeAnimation_du524")
+nodes/WeaponAnim/position = Vector2(-940, 120)
+nodes/WeaponAnimIdle/node = SubResource("AnimationNodeAnimation_o0oej")
+nodes/WeaponAnimIdle/position = Vector2(-780, -40)
+nodes/WeaponSpeed/node = SubResource("AnimationNodeTimeScale_q6an3")
+nodes/WeaponSpeed/position = Vector2(-620, 100)
+nodes/add_armlook/node = SubResource("AnimationNodeAdd2_4uor1")
+nodes/add_armlook/position = Vector2(240, 240)
+nodes/add_look/node = SubResource("AnimationNodeAdd2_fndld")
+nodes/add_look/position = Vector2(20, 240)
+nodes/add_motion/node = SubResource("AnimationNodeAdd2_2i2l3")
+nodes/add_motion/position = Vector2(-240, 220)
+nodes/armlookdown/node = SubResource("AnimationNodeAnimation_ruubd")
+nodes/armlookdown/position = Vector2(-440, 740)
+nodes/armlookup/node = SubResource("AnimationNodeAnimation_coq3h")
+nodes/armlookup/position = Vector2(-440, 840)
+nodes/armupdown_look/node = SubResource("AnimationNodeBlend2_doh4o")
+nodes/armupdown_look/position = Vector2(-160, 740)
+nodes/lookdown/node = SubResource("AnimationNodeAnimation_32q4f")
+nodes/lookdown/position = Vector2(-440, 480)
+nodes/lookup/node = SubResource("AnimationNodeAnimation_cbk7k")
+nodes/lookup/position = Vector2(-440, 600)
+nodes/movement_anim/node = SubResource("AnimationNodeAnimation_w8rmp")
+nodes/movement_anim/position = Vector2(-740, 280)
+nodes/output/position = Vector2(460, 140)
+nodes/updown_look/node = SubResource("AnimationNodeBlend2_2ywuk")
+nodes/updown_look/position = Vector2(-160, 480)
+node_connections = [&"output", 0, &"add_armlook", &"OneShot", 0, &"WeaponAnimIdle", &"OneShot", 1, &"WeaponSpeed", &"RestartWalk", 0, &"movement_anim", &"WeaponSpeed", 0, &"WeaponAnim", &"add_armlook", 0, &"add_look", &"add_armlook", 1, &"armupdown_look", &"add_look", 0, &"add_motion", &"add_look", 1, &"updown_look", &"add_motion", 0, &"OneShot", &"add_motion", 1, &"RestartWalk", &"armupdown_look", 0, &"armlookdown", &"armupdown_look", 1, &"armlookup", &"updown_look", 0, &"lookdown", &"updown_look", 1, &"lookup"]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_awft7"]
+
+[node name="master_animator" type="Node3D"]
+script = ExtResource("1_e2wur")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"PlayerLibrary": ExtResource("2_7ejk5")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeBlendTree_472cj")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/OneShot/active = false
+parameters/OneShot/request = 0
+parameters/RestartWalk/seek_request = -1.0
+parameters/Weapon/playback = SubResource("AnimationNodeStateMachinePlayback_awft7")
+parameters/WeaponSpeed/scale = 1.0
+parameters/add_armlook/add_amount = 1.0
+parameters/add_look/add_amount = 1.0
+parameters/add_motion/add_amount = 0.0
+parameters/armupdown_look/blend_amount = 0.5
+parameters/updown_look/blend_amount = 0.5
+
+[node name="WeaponHolder" type="BoneAttachment3D" parent="."]
+use_external_skeleton = true
+external_skeleton = NodePath("")
+
+[node name="justdont" type="MeshInstance3D" parent="WeaponHolder"]
+transform = Transform3D(-6.55671e-09, -0.15, -6.55671e-09, 0, -6.55671e-09, 0.15, -0.15, 6.55671e-09, 2.86603e-16, 0, 0, 0)
+mesh = ExtResource("3_rw131")

@@ -18,6 +18,7 @@ var ReloadSpeed = 1
 var EquipSpeed = 1
 var ReloadSound = null
 var FireSound = null
+var HideArms = "none"
 
 func _init(dict={}):
 	for entry in dict:

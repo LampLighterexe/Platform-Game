@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://hrc5l7g7hi00"]
+
+[ext_resource type="Script" path="res://Scripts/Projectile.gd" id="1_w7iog"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_geagi"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_oi4jp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6is0c"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(1, 0, 0, 0.384314)
+
+[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_w13xv"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_e31cj"]
+
+[node name="Projectile" type="Node3D"]
+process_priority = 1
+script = ExtResource("1_w7iog")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_oi4jp")
+
+[node name="Smoothing" type="Node3D" parent="RigidBody3D"]
+script = ExtResource("2_geagi")
+
+[node name="debug" type="MeshInstance3D" parent="RigidBody3D/Smoothing"]
+layers = 512
+material_override = SubResource("StandardMaterial3D_6is0c")
+mesh = SubResource("PlaceholderMesh_w13xv")
+skeleton = NodePath("")
+
+[node name="model" type="MeshInstance3D" parent="RigidBody3D/Smoothing"]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="RigidBody3D"]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D/Area3D"]
+shape = SubResource("SphereShape3D_e31cj")
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="RigidBody3D"]
+unit_size = 2.5
+
+[connection signal="body_entered" from="RigidBody3D" to="." method="_on_rigid_body_3d_body_entered"]
+[connection signal="body_entered" from="RigidBody3D/Area3D" to="." method="_on_area_3d_body_entered"]

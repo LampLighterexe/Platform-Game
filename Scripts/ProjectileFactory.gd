@@ -13,7 +13,8 @@ func _init():
 		"Size":2,
 		"PierceCount":5,
 		"DieOnTerrain":false,
-		"HitSound":preload("res://Sounds/cat.mp3")
+		"HitSound":preload("res://Sounds/cat.mp3"),
+		"Knockback":30
 	}))
 	register("freeze_ray",ProjectileConfig.new({
 		"Damage":3,
@@ -34,7 +35,8 @@ func _init():
 		"PhysicsEnabled":false,
 		"AttachOffset":Vector3(0,0,1),
 		"Size":Vector3(1.5,1,3),
-		"ProjMaxLifetime":0.1
+		"ProjMaxLifetime":0.1,
+		"Knockback":8
 	}))
 	register("sniper",ProjectileConfig.new({
 		"Damage":10,
@@ -80,7 +82,8 @@ func _init():
 		"AttachOffset":Vector3(0,0,0),
 		"Size":4,
 		"PierceCount":9999,
-		"ProjMaxLifetime":0.033
+		"ProjMaxLifetime":0.033,
+		"Knockback":12
 	}))
 
 func register(projname, projconfig):

@@ -15,7 +15,13 @@ func _init():
 		"MaxHealth":200.0,
 		"PlayerModel":preload("res://Characters/soundbyte.tscn"),
 		"ViewHeight":1.42,
-		"Size":1.5
+		"Size":1.5,
+		"KbMul":0.5
+	}))
+	register("base",PlayerConfig.new({
+		"PlayerModel":preload("res://Characters/base.tscn"),
+		"ViewHeight":1.4,
+		"KbMul":3,
 	}))
 
 func register(playername, playerconfig):

@@ -129,11 +129,11 @@ func ChangeWeaponSlot(dir):
 	if not is_multiplayer_authority(): return
 	networkWeaponSlot.rpc(WeaponSlot)
 
-@rpc("call_local")
+@rpc
 func networkWeaponSlot(weaponslot):
 	WeaponSlot = weaponslot
 	
-@rpc("call_local")
+@rpc
 func networkCurrentState(state):
 	CurrentState = state
 	
@@ -146,7 +146,8 @@ func networkCreateProjectile(pos,velocity,projconfig,auth):
 		projconfig,
 		Aim,
 		Player.Team,
-		auth
+		auth,
+		true
 	)
 	
 func setCurrentState(state):
