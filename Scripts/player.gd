@@ -4,7 +4,7 @@ extends PlayerConfig
 
 
 signal HealthChanged
-
+signal AmmoChanged
 
 var Team = "player"
 var CameraSens = 0.0025
@@ -50,25 +50,18 @@ func syncHealth(h):
 @rpc("call_local")
 func changeTeam(team):
 	Team = team
-	match team:
-		"player":
-			set_collision_layer_value(4,false)
-			set_collision_layer_value(5,true)
-		"enemy":
-			set_collision_layer_value(5,false)
-			set_collision_layer_value(4,true)
 
 @rpc("any_peer","call_local")
 func takeDamage(damage):
-	Health -= damage
-	lastDamageTime = 0.0
-	Helpers.createSound($PlayerSound,preload("res://Sounds/hit1.wav"),self)
+	if damage > 0:
+		Health -= damage
+		lastDamageTime = 0.0
+		Helpers.createSound($PlayerSound,preload("res://Sounds/hit1.wav"),self)
 
 @rpc("any_peer", "call_local")
-func takeKnockback(kb,kbpos):
+func takeKnockback(kb,kbpos,type,vel):
 	if not is_multiplayer_authority(): return
-	velocity += ((global_position-kbpos)*Vector3(1,0,1)).normalized()*(kb*KbMul)
-	velocity.y += sqrt(1+kb*2)*KbMul
+	velocity += vel*KbMul
 
 func isAlive():
 	return Health > 0.0
@@ -76,10 +69,7 @@ func isAlive():
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	
-	if event is InputEventMouseButton:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	elif event.is_action_pressed("inventory") or event.is_action_pressed("ui_cancel"):
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if event is InputEventMouseMotion:
 			neck.rotate_y(-event.relative.x * CameraSens)
@@ -91,7 +81,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			changeTeam.rpc("enemy")
 		else:
 			changeTeam.rpc("player")
-		#setChar.rpc("soundbyte")
 	if Input.is_action_just_pressed("debugkey3"):
 		camera.set_cull_mask_value(10,not camera.get_cull_mask_value(10))
 
@@ -126,16 +115,17 @@ func setCharacterDefaults(c):
 			PlayerWorldModel = PlayerModel.instantiate()
 		PlayerModel = PlayerModel.instantiate()
 		PlayerModelContainer.add_child(PlayerModel)
+		MasterAnimator = PlayerModel.get_node("%master_animator")
+		PlayerSkeleton = PlayerModel.get_node("%GeneralSkeleton")
+		MasterAnimator.Skeleton = PlayerSkeleton
+		MasterAnimator.set_multiplayer_authority(str(name).to_int())
+		MasterAnimator.character = character
 	if PlayerWorldModel:
 		PlayerModelContainer.add_child(PlayerWorldModel)
 		WorldMasterAnimator = PlayerWorldModel.get_node("%master_animator")
 		WorldMasterAnimator.set_multiplayer_authority(str(name).to_int())
 		WorldMasterAnimator.character = character
-	MasterAnimator = PlayerModel.get_node("%master_animator")
-	PlayerSkeleton = PlayerModel.get_node("%GeneralSkeleton")
-	MasterAnimator.Skeleton = PlayerSkeleton
-	MasterAnimator.set_multiplayer_authority(str(name).to_int())
-	MasterAnimator.character = character
+
 	scale = Vector3.ONE * Size
 	if ViewHeight:
 		neck.position.y = ViewHeight

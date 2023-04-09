@@ -2,7 +2,7 @@ extends Node
 
 var ProjectileObject = preload("res://Scenes/Projectile.tscn")
 
-func createProjectile(pos,velocity,projconfig,origin,team,auth,showdmg=false):
+func createProjectile(pos,velocity,projconfig,origin,team,auth,playerref,showdmg=false):
 	var newproj = ProjectileObject.instantiate()
 	newproj.initialize(
 		pos,
@@ -11,6 +11,7 @@ func createProjectile(pos,velocity,projconfig,origin,team,auth,showdmg=false):
 		origin,
 		team,
 		auth,
+		playerref,
 		showdmg
 	)
 	add_child(newproj)
@@ -45,9 +46,19 @@ func dealDamage(eID,damage):
 	networkDamage.rpc_id(1,eID,damage)
 
 @rpc("any_peer","call_local")
-func networkKnockback(e,kb,kbpos):
-	if EntityManager.getEntity(e):
-		EntityManager.getEntity(e).takeKnockback.rpc(kb,kbpos)
+func networkKnockback(e,kb,kbpos,type):
+	var entity = EntityManager.getEntity(e)
+	if entity:
+		var velocity = Vector3.ZERO
+		match type:
+			"setY":
+				velocity = ((entity.global_position-kbpos)*Vector3(1,0,1)).normalized()*(kb)
+				velocity.y += sqrt(1+kb*2)
+			"dynamicY":
+				velocity = ((entity.global_position-(kbpos+Vector3(0,-1,0)))).normalized()*(kb)
+			"onlyY":
+				velocity.y = kb
+		entity.takeKnockback.rpc(kb,kbpos,type,velocity)
 
-func dealKnockback(eID,kb,kbpos):
-	networkKnockback.rpc_id(1,eID,kb,kbpos)
+func dealKnockback(eID,kb,kbpos,type):
+	networkKnockback.rpc_id(1,eID,kb,kbpos,type)

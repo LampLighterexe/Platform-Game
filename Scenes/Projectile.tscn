@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/Projectile.gd" id="1_w7iog"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_geagi"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_oi4jp"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ua76c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6is0c"]
 transparency = 1
@@ -14,37 +14,35 @@ albedo_color = Color(1, 0, 0, 0.384314)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_e31cj"]
 
-[node name="Projectile" type="Node3D"]
+[node name="Projectile" type="CharacterBody3D"]
 process_priority = 1
+collision_layer = 0
+floor_stop_on_slope = false
 script = ExtResource("1_w7iog")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-collision_layer = 0
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_ua76c")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("SphereShape3D_oi4jp")
-
-[node name="Smoothing" type="Node3D" parent="RigidBody3D"]
+[node name="Smoothing" type="Node3D" parent="."]
 script = ExtResource("2_geagi")
 
-[node name="debug" type="MeshInstance3D" parent="RigidBody3D/Smoothing"]
+[node name="debug" type="MeshInstance3D" parent="Smoothing"]
 layers = 512
 material_override = SubResource("StandardMaterial3D_6is0c")
 mesh = SubResource("PlaceholderMesh_w13xv")
 skeleton = NodePath("")
 
-[node name="model" type="MeshInstance3D" parent="RigidBody3D/Smoothing"]
+[node name="model" type="MeshInstance3D" parent="Smoothing"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
 
-[node name="Area3D" type="Area3D" parent="RigidBody3D"]
+[node name="Area3D" type="Area3D" parent="."]
 collision_layer = 0
-collision_mask = 0
+collision_mask = 8
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_e31cj")
 
-[node name="Audio" type="AudioStreamPlayer3D" parent="RigidBody3D"]
+[node name="Audio" type="AudioStreamPlayer3D" parent="."]
 unit_size = 2.5
 
-[connection signal="body_entered" from="RigidBody3D" to="." method="_on_rigid_body_3d_body_entered"]
-[connection signal="body_entered" from="RigidBody3D/Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

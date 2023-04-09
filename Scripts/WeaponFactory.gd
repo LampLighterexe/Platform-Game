@@ -34,13 +34,28 @@ func _init():
 			"Model":preload("res://models/exported/Freeze_Ray.res"),
 			"Projectile":"freeze_ray",
 			"Clip":10,
-			"MaxAmmo":100,
+			"MaxAmmo":-1,
 			"ProjXSpeed":16,
 			"ProjYSpeed":0,
 			"Automatic":true,
 			"HideArms":"both"
 	}))
-		
+	register("Rocket Launcher",Weapon.new({
+			"Name":"Rocket Launcher",
+			"AnimationSet":"pistol",
+			"FireAnim":"w_freeze_ray",
+			"Model":preload("res://models/exported/rocketlauncher.res"),
+			"Projectile":"rocket",
+			"Clip":4,
+			"MaxAmmo":60,
+			"FireSpeed":0.22,
+			"ReloadSpeed":0.60,
+			"ProjXSpeed":24,
+			"ProjYSpeed":0,
+			"FireSound":preload("res://Sounds/rocket_shoot.wav"),
+			"Automatic":true,
+			"HideArms":"both"
+	}))
 	register("debug",Weapon.new({
 			"Name":"debug",
 			"AnimationSet":"pistol",

@@ -35,8 +35,9 @@ func _physics_process(delta):
 			nav_agent.set_velocity(new_velocity)
 			velocity.y += -9.8*delta
 	else:
-		nav_agent.set_velocity(Vector3.ZERO)
-		velocityimmidiate += -velocity*0.2
+		if is_on_floor():
+			nav_agent.set_velocity(Vector3.ZERO)
+			velocityimmidiate += -velocity*0.2
 	if is_multiplayer_authority():
 		move_and_slide()
 
@@ -78,7 +79,8 @@ func attack():
 		"mobattack",
 		Aim,
 		self.Team,
-		get_multiplayer_authority()
+		get_multiplayer_authority(),
+		self
 	)
 
 @rpc("any_peer", "call_local")
@@ -87,9 +89,8 @@ func takeDamage(damage):
 	Helpers.createParticles($CPUParticles3D)
 
 @rpc("any_peer", "call_local")
-func takeKnockback(kb,kbpos):
-	velocityimmidiate += ((global_position-kbpos)*Vector3(1,0,1)).normalized()*kb
-	velocity.y += sqrt(1+kb*2)
-
+func takeKnockback(kb,kbpos,type,vel):
+	if not is_multiplayer_authority(): return
+	velocityimmidiate += vel
 func isAlive():
 	return health > 0

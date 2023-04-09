@@ -38,13 +38,19 @@ func AddPoints(p):
 		SyncPoints.rpc(p)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and not main_menu.is_visible_in_tree():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	elif event.is_action_pressed("inventory") or event.is_action_pressed("ui_cancel"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Input.is_action_just_pressed("debugkey1"):
 		#if this somehow creates a use after free i'm going to just quit
-
 		muliplayerspawner.spawn({"id":str(randi_range(-65535,65534)),"type":"spider"})
+	if Input.is_action_just_pressed("debugkey4"):
+		if not multiplayer.is_server():
+			player_disconnect()
 
 func _physics_process(delta):
-	if is_multiplayer_authority():
+	if multiplayer.multiplayer_peer and is_multiplayer_authority():
 		var enemytarget = get_tree().get_nodes_in_group("player")
 		get_tree().call_group("enemies","update_target_list",enemytarget)
 	
@@ -61,9 +67,7 @@ func _physics_process(delta):
 
 
 func _on_host_button_pressed():
-	main_menu.hide()
-	hud.show()
-	
+	hide_menu()
 	var address = address_entry.text.split(":")
 	if address.size() > 1:
 		PORT = int(address[-1])
@@ -79,14 +83,13 @@ func _on_host_button_pressed():
 		upnp_setup()
 
 func _on_join_button_pressed():
-	main_menu.hide()
-	hud.show()
-	
+	hide_menu()
 	var address = address_entry.text.split(":")
 	if address.size() > 1:
 		PORT = int(address[-1])
 	print(address[0],":", PORT)
 	enet_peer.create_client(address[0], PORT)
+	multiplayer.server_disconnected.connect(show_menu)
 	multiplayer.multiplayer_peer = enet_peer
 	
 func add_player(peer_id):
@@ -99,11 +102,15 @@ func add_player(peer_id):
 	
 	if player.is_multiplayer_authority():
 		player.HealthChanged.connect(update_health_bar)
+		player.AmmoChanged.connect(update_ammo)
 	RequiresReset = true
 
 
 func update_health_bar(h,mh):
 	health_bar.update_health_bar(h,mh)
+
+func update_ammo(c,cm,ma):
+	health_bar.update_ammo(c,cm,ma)
 
 func add_points(p):
 	health_bar.add_points(p)
@@ -117,7 +124,24 @@ func _on_multiplayer_spawner_spawned(node):
 	RequiresReset = true
 	if node.is_multiplayer_authority():
 		node.HealthChanged.connect(update_health_bar)
+		node.AmmoChanged.connect(update_ammo)
 
+func player_disconnect():
+	enet_peer = ENetMultiplayerPeer.new()
+	multiplayer.multiplayer_peer = null
+	show_menu()
+	
+	
+func show_menu():
+	main_menu.show()
+	hud.hide()
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+func hide_menu():
+	main_menu.hide()
+	hud.show()
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
 func upnp_setup():
 	var upnp = UPNP.new()
 	

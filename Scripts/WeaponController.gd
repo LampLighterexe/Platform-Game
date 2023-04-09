@@ -36,7 +36,8 @@ func _ready():
 	Weapons = [Registry.WeapFact.getWeaponInstance("Hands"),
 			Registry.WeapFact.getWeaponInstance("dingus"),
 			Registry.WeapFact.getWeaponInstance("Freeze Ray"),
-			Registry.WeapFact.getWeaponInstance("debug")
+			Registry.WeapFact.getWeaponInstance("debug"),
+			Registry.WeapFact.getWeaponInstance("Rocket Launcher")
 	]
 
 func FireCurrentWeapon():
@@ -44,7 +45,7 @@ func FireCurrentWeapon():
 		return
 	Helpers.createSound($"../PlayerSound",CurrentWeapon.FireSound,SoundHolder)
 	CurrentWeapon.RemoveClip(1)
-	
+	UpdateHudAmmo()
 	if not is_multiplayer_authority(): return
 	networkCreateProjectile.rpc(
 		Aim.global_transform,
@@ -91,9 +92,10 @@ func _process(_delta):
 				
 			"fire":
 				if LastState != "fire":
-					ViewModelAnim.stop()
+					#if ViewModelAnim.current_animation == getAnim(CurrentWeapon,CurrentState):
+					#	ViewModelAnim.stop()
 					WeaponFire.play(CurrentWeapon.FireAnim,0.0,CurrentWeapon.FireSpeed)
-					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.1,CurrentWeapon.FireSpeed)
+					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.0,CurrentWeapon.FireSpeed)
 				if not ViewModelAnim.is_playing():
 					setCurrentState("idle")
 
@@ -104,10 +106,12 @@ func _process(_delta):
 					Helpers.createSound($"../PlayerSound",CurrentWeapon.ReloadSound,SoundHolder)
 				if not ViewModelAnim.is_playing():
 					CurrentWeapon.RefillClip()
+					UpdateHudAmmo()
 					setCurrentState("idle")
 			"equip":
 				if LastState != "equip":
 					ViewModelAnim.play(getAnim(CurrentWeapon,CurrentState),0.0,CurrentWeapon.EquipSpeed)
+					UpdateHudAmmo()
 				else:
 					if Weapons[WeaponSlot].Model:
 						ViewModelWeapon.mesh = Weapons[WeaponSlot].Model
@@ -116,9 +120,10 @@ func _process(_delta):
 						ViewModelWeapon.visible = false
 				if not ViewModelAnim.is_playing():
 					setCurrentState("idle")
+		LastState = CurrentState
 
-	LastState = CurrentState
-
+func UpdateHudAmmo():
+	Player.AmmoChanged.emit(CurrentWeapon.Clip,CurrentWeapon.ClipMax,CurrentWeapon.MaxAmmo)
 
 func ChangeWeaponSlot(dir):
 	WeaponSlot += dir
@@ -147,6 +152,7 @@ func networkCreateProjectile(pos,velocity,projconfig,auth):
 		Aim,
 		Player.Team,
 		auth,
+		Player,
 		true
 	)
 	

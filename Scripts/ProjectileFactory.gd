@@ -72,6 +72,32 @@ func _init():
 		"PierceCount":10,
 		"ProjMaxLifetime":0.033
 	}))
+	register("rocket",ProjectileConfig.new({
+		"Damage":0,
+		"Model":preload("res://models/exported/rocket.res"),
+		"Gravity":0,
+		"AttachOffset":Vector3(-0.3,0,0.5),
+		"Size":0.5,
+		"HitboxSize":2,
+		"ForceDir":true,
+		"ProjMaxLifetime":5,
+		"DeathProjectile":"rocketexplosion"
+	}))
+	register("rocketexplosion",ProjectileConfig.new({
+		"Damage":25,
+		"Model":null,
+		"Gravity":0,
+		"AttachToOwner":false,
+		"DieOnTerrain":false,
+		"PhysicsEnabled":false,
+		"AttachOffset":Vector3(0,0,0),
+		"Size":7,
+		"PierceCount":30,
+		"Knockback":12,
+		"ProjMaxLifetime":0.033,
+		"KnockbackType":"dynamicY",
+		"SelfDamage":true
+	}))
 	register("mobattack",ProjectileConfig.new({
 		"Damage":20,
 		"Model":null,
